@@ -1,0 +1,53 @@
+/* 🔹 Centrar el contenido principal */
+.app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 950px;
+    max-width: 1700px; /* límite del ancho */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    min-width: 950px;
+    max-width: 1700px; /* límite del ancho */
+    margin: 0 auto; /* centra el bloque */
+    padding: 0; /* evita que el texto toque el borde */
+  /* box-sizing: border-box; */
+}
+
+/* 🔹 Para asegurarte que todo respete los anchos */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  margin: auto;
+  color: var(--text-color);
+  font-family: Inter, sans-serif;
+  
+}
+
+@media (max-width: 950px) {
+  .app {
+    display: none;
+  }
+
+  .not-available {
+    display: block;
+  }
+}
+
+@media (min-width: 950px) {
+  .not-available {
+    display: none;
+  }
+}

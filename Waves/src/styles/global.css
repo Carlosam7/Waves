@@ -1,0 +1,41 @@
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-width: 950px;
+  max-width: 1700px;
+  margin: auto;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  padding: 0;
+  margin: 0;
+}
+
+p {
+  font-size: 14px;
+    color: var(--color2);
+    margin: 0;
+    padding: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover p {
+  cursor: pointer;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+button {
+  font-family: Inter;
+  font-weight: 300;
+}
+
+div {
+  display: flex;
+}
