@@ -1,0 +1,39 @@
+.dialog {
+    /* display: flex; */
+    max-width: 700px;
+    height: 100vh;
+    padding: 50px;
+    background-color: transparent;
+    border: 0;
+}
+
+.containDialog {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    border: 1px solid var(--color-border2);
+    border-radius: 15px;
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-card);
+}
+
+.containDialog header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.containDialog header h2 {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.btnCloseDialog {
+    cursor: pointer;
+    background-color: transparent;
+    border: 0px;
+    border-radius: 100%;
+}

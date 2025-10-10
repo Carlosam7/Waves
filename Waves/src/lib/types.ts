@@ -21,3 +21,7 @@ export interface Microservice {
     version: string;
     tags: string[];
 }
+
+export type BoxDialogProp = {
+    dialogRef: {current: HTMLDialogElement | null;}
+}

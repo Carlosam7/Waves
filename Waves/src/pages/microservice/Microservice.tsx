@@ -1,18 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import styles from '../pages.module.css'
 import stylesM from './microservice.module.css'
 import { MicroserviceCard } from '../../components/MicroserviceCard/MicroserviceCard';
 import type { Microservice } from '../../lib/types';
 import { storageService } from '../../lib/storage';
+import { BoxDialog } from '../../components/BoxDialog/BoxDialog';
 
 export function Microservice() {
     const [services, setServices] = useState<Microservice[]>([]);
+    const dialogEdit: React.RefObject<HTMLDialogElement | null> = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {
         storageService.seed();
         loadServices();
     }, []);
+
+    const openDialog = () => {
+        dialogEdit.current?.showModal();
+    };
 
     const loadServices = () => {
         const allServices = storageService.getAll();
@@ -27,7 +33,7 @@ export function Microservice() {
                         <p>Create and manage your microservices with Waves, our service platform</p>
                     </div>
                     <div>
-                        <button className={stylesM.btnAdd}>
+                        <button className={stylesM.btnAdd} onClick={openDialog}>
                             <img src="src/assets/icons/icon-plus.png" width={20} alt="" />
                             Add Microservice
                         </button>
@@ -53,6 +59,8 @@ export function Microservice() {
                     )}
                 </div>
             </main>
+            <BoxDialog dialogRef={dialogEdit} />
+            
         </>
     )
 }
