@@ -1,4 +1,3 @@
-/* 🔹 Centrar el contenido principal */
 .app {
     display: flex;
     flex-direction: column;
@@ -6,6 +5,7 @@
     justify-content: center;
     min-width: 950px;
     max-width: 1700px; /* límite del ancho */
+    
 }
 
 .container {
@@ -15,13 +15,11 @@
     justify-content: center;
     width: 100vw;
     min-width: 950px;
-    max-width: 1700px; /* límite del ancho */
-    margin: 0 auto; /* centra el bloque */
-    padding: 0; /* evita que el texto toque el borde */
-  /* box-sizing: border-box; */
+    max-width: 1700px;
+    margin: 0 auto;
+    padding: 0;
 }
 
-/* 🔹 Para asegurarte que todo respete los anchos */
 * {
   box-sizing: border-box;
 }

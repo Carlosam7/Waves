@@ -5,11 +5,11 @@
     --color-bg: #F9F9F9;
     --color-bg-secondary: #ffffff;
     --color-text: #000000;
-    --color2: #747474;
+    --color-text2: #747474;
 
     --color-primary: #7376FF;
     --color-border: #DADADA;
-    --color-border2: #DADADA;
+    
     --shadow-card: 0px 0px 10px rgba(0,0,0,.1);
 }
 
@@ -17,10 +17,9 @@
 /* Dark theme */
 .dark {
     --color-bg: #202020;
-    --color-bg-secondary: #ffffff5A
     --color-text: #FFFFFF;
-    --color2: #FFFFFF1E;
-    --color-border: #FFFFFF50;
-    --color-border2: #FFFFFF50;
+    --color-text2: #FFFFFF7A;
+    --color-border: #87878750;
+    --color-border2: #87878750;
     --shadow-card: none;
 }

@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import './components/atoms/BarSetup/BarSetup';
-// import { BarSetup } from './components/atoms/BarSetup/BarSetup'
 import { MainLayout } from './layout/MainLayout';
 import { Dashboard } from './pages/Dashboard';
 import { Microservice } from './pages/microservice/Microservice';

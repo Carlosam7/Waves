@@ -20,7 +20,7 @@ export function Microservice() {
     }
     return (
         <>
-            <main className={styles.container}>
+            <main className={`${styles.container}`}>
                 <div className={stylesM.microserviceHeader}>
                     <div>
                         <h2 className={stylesM.titleMicroservice}>Microservices</h2>

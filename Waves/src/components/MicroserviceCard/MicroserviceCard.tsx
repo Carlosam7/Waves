@@ -1,3 +1,4 @@
+import { useTheme } from "../../context/ThemeContext";
 import  styles  from "./microserviceCard.module.css"
 
 import type { Microservice } from "../../lib/types";
@@ -62,7 +63,7 @@ export function MicroserviceCard ({ service, onEdit, onDelete, onViewEndpoints }
 
                 <section className={`${styles.footCard}`}>
                     <div className={styles.pathService}>
-                        <img src="src/assets/icons/icon-url-black.png" alt="" width={20} style={{userSelect: "none"}}/>
+                        <img src={`${useTheme().theme==='dark' ? 'src/assets/icons/icon-url.png' : 'src/assets/icons/icon-url-black.png'}`} alt="icono url" width={20} style={{userSelect: "none"}}/>
                         <span>{ service.baseUrl }</span>
                     </div>
 
@@ -71,10 +72,10 @@ export function MicroserviceCard ({ service, onEdit, onDelete, onViewEndpoints }
                             { service.endpoints.length } Endpoints
                         </button>
                         <button className={styles.btnEdit} onClick={() => onEdit(service)}>
-                            <img src="src/assets/icons/icon-edit.png" alt="" width={20}/>
+                            <img src="src/assets/icons/icon-edit.png" alt="icono botón editar" width={20}/>
                         </button>
                         <button className={styles.btnDelete} onClick={() => onDelete(service)}>
-                            <img src="src/assets/icons/icon-delete.png" alt="" width={20}/>
+                            <img src="src/assets/icons/icon-delete.png" alt="icono eliminar" width={20}/>
                         </button>
                     </div>
                 </section>

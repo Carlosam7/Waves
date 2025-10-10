@@ -1,13 +1,12 @@
 .containerCard {
     flex-direction: column;
-    background-color: var(--color-bg);
     padding: 40px;
     border-radius: 15px;
+    border: 1px solid var(--color-border);
     box-shadow: var(--shadow-card);
     max-width: 300px;
     box-sizing: content-box;
     height: 320px;
-    background-color: white;
 }
 
 .content {
@@ -49,11 +48,13 @@
     display: -webkit-box;
     font-size: 12px;
     font-weight: 300;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    color: var(--color-text2);
+    
     overflow: hidden;
     text-overflow: ellipsis;
     word-break: break-word;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .tagsCard {
@@ -62,7 +63,7 @@
     width: 100%;
     font-size: 12px;
     font-weight: 300;
-    color: var(--color2);    
+    color: var(--color-text2);    
     column-gap: 10px;
     row-gap: 10px;
     margin-top: 25px;
@@ -87,6 +88,7 @@
     justify-content: start;
     width: 100%;
     gap: 10px;
+    color: var(--color-text);
     border-bottom: 1px;
     border-bottom-style: solid;
     border-color: var(--color-border);
@@ -111,11 +113,12 @@
 .btnViewEndpoint {
     width: 70%;
     height: 40px;
-    background-color: white;
+    color: var(--color-text);
+    background-color: var(--color-bg);
     border: 1px;
     border-radius: 10px;
     border-style: solid;
-    border-color: var(--color-border2);
+    border-color: var(--color-border);
     transition: transform 0.2s, border-color 0.5s;
     
     cursor: pointer;
