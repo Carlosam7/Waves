@@ -2,53 +2,29 @@ import fs from "fs";
 import getPort, { portNumbers } from "get-port";
 import { exec } from "child_process";
 
-const dockerFile = `FROM python:3.14-slim\nWORKDIR /app\nCOPY main.py .\nRUN pip install flask\nEXPOSE 5000\nCMD ["python", "main.py"]`;
-// const dockerFile = `# Imagen base de Node
-// FROM node:18
+function execPromise(cmd) {
+  return new Promise((res, rej) => {
+    exec(cmd, (error, stdout, stderr) => {
+      if (error) return rej(stderr);
+      res(stdout);
+    });
+  });
+}
 
-// # Crear directorio de trabajo
-// WORKDIR /app
+function getContainerConfig(language) {
+  const path = `./containerConfig.json`;
+  const configs = JSON.parse(fs.readFileSync(path, "utf-8"));
 
-// # Copiar archivos
-// COPY package*.json ./
-// COPY index.js .
+  return configs[language];
+}
+// const config = getContainerConfig("CS");
+// const dockerFile = config.dockerFile;
+// const entryPoint = config.entryPoint;
+// console.log(entryPoint);
+// console.log({ message: "Setting container 📦⚙️", dockerFile, entryPoint });
 
-// # Instalar dependencias
-// RUN npm install express
-
-// # Exponer puerto
-// EXPOSE 5000
-
-// # Comando para ejecutar el servidor
-// CMD ["node", "index.js"]
-// `;
-
-// const dockerFile = `# Etapa 1: Build
-// FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-// WORKDIR /app
-
-// # Creamos un nuevo proyecto web minimal
-// RUN dotnet new web -n Microservice
-// WORKDIR /app/Microservice
-
-// # Eliminamos el Program.cs generado y lo reemplazamos
-// RUN rm Program.cs
-// COPY Program.cs .
-
-// # Restauramos dependencias y compilamos
-// RUN dotnet restore
-// RUN dotnet publish -c Release -o /out
-
-// # Etapa 2: Runtime
-// FROM mcr.microsoft.com/dotnet/aspnet:8.0
-// WORKDIR /app
-// COPY --from=build /out .
-
-// EXPOSE 5000
-// ENTRYPOINT ["dotnet", "Microservice.dll"]
-// `;
-
-export async function createContainer(name, code) {
+// ------------------- export functions ---------------------------------
+export async function createContainer(name, code, language) {
   const path = `./temp/${name}`;
   const port = await getPort({ port: portNumbers(5000, 8000) });
 
@@ -56,7 +32,12 @@ export async function createContainer(name, code) {
     await fs.promises.mkdir(path, { recursive: true });
   }
 
-  await fs.promises.writeFile(`${path}/main.py`, code);
+  const containerConfig = getContainerConfig(language);
+  const dockerFile = containerConfig.dockerFile;
+  const entryPoint = containerConfig.entryPoint;
+
+  console.log({ message: `Setting container 📦⚙️`, dockerFile, entryPoint });
+  await fs.promises.writeFile(`${path}/${entryPoint}`, code);
   await fs.promises.writeFile(`${path}/Dockerfile`, dockerFile);
 
   const imageName = `${name}`;
@@ -72,15 +53,6 @@ export async function createContainer(name, code) {
     port,
     url: `http://localhost:${port}`,
   };
-}
-
-function execPromise(cmd) {
-  return new Promise((res, rej) => {
-    exec(cmd, (error, stdout, stderr) => {
-      if (error) return rej(stderr);
-      res(stdout);
-    });
-  });
 }
 
 export async function deleteContainer(name) {

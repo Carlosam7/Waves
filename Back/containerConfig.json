@@ -1,0 +1,14 @@
+{
+  "Python": {
+    "dockerFile": "FROM python:3.14-slim\nWORKDIR /app\nCOPY main.py .\nRUN pip install flask\nEXPOSE 5000\nCMD [\"python\", \"main.py\"]",
+    "entryPoint": "main.py"
+  },
+  "JS": {
+    "dockerFile": "FROM node:18\nWORKDIR /app\nCOPY package*.json ./\nCOPY index.js .\nRUN npm install express\nEXPOSE 5000\nCMD [\"node','index.js\"]\n",
+    "entryPoint": "index.js"
+  },
+  "CSharp": {
+    "dockerFile": "FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build\nWORKDIR /app\nRUN dotnet new web -n Microservice\nWORKDIR /app/Microservice\nRUN rm Program.cs\nCOPY Program.cs .\nRUN dotnet restore\nRUN dotnet publish -c Release -o /out\nFROM mcr.microsoft.com/dotnet/aspnet:8.0\nWORKDIR /app\nCOPY --from=build /out .\nEXPOSE 5000\nENTRYPOINT [\"dotnet\",\"Microservice.dll\"]\n",
+    "entryPoint": "Program.cs" 
+  }
+}

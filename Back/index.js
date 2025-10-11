@@ -246,12 +246,12 @@ app.post("/db/delete", async (req, res) => {
 
 app.post("/deploy", async (req, res) => {
   try {
-    const { name, code, accessToken } = req.body;
+    const { name, code, accessToken, language } = req.body;
     if (!name || !code)
       return res
         .status(400)
         .json({ error: "Fields: name and code are required" });
-    const serviceInfo = await createContainer(name, code);
+    const serviceInfo = await createContainer(name, code, language);
 
     await fetch("http://localhost:3000/db/insert", {
       method: "POST",
