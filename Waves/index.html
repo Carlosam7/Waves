@@ -4,10 +4,41 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <title>waves</title>
+    <!-- <style>
+  html {
+    background-color: white;
+  }
+  html.dark {
+    background-color: #0f0f0f; /* tu color oscuro */
+  }
+</style>
+
+
+    <script>
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+
+      if (savedTheme === 'light') {
+        document.documentElement.classList.add('light')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    </script> -->
+
   </head>
+  
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
   </body>
+  
 </html>

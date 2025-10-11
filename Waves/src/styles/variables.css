@@ -17,9 +17,17 @@
 /* Dark theme */
 .dark {
     --color-bg: #202020;
+    --color-bg-secondary: #202020;
     --color-text: #FFFFFF;
     --color-text2: #FFFFFF7A;
     --color-border: #87878750;
     --color-border2: #87878750;
     --shadow-card: none;
 }
+
+/* .Inter {
+  font-family: "Inter", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+} */

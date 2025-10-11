@@ -26,10 +26,6 @@
 
 
 .btnAdd {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: start;
     background: linear-gradient(140deg, #5B5EE2 20%, #7576FF 100%);
     color: #ffffff;
     border: none;

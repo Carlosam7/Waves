@@ -1,13 +1,18 @@
 .dialog {
     /* display: flex; */
+    align-items: center;
+    justify-content: center;
     max-width: 700px;
     height: 100vh;
+    max-height: 800px;
     padding: 50px;
     background-color: transparent;
     border: 0;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
-.containDialog {
+.dialogContain {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -15,25 +20,161 @@
     padding: 40px;
     border: 1px solid var(--color-border2);
     border-radius: 15px;
-    background-color: var(--color-bg);
+    background-color: var(--color-bg-secondary);
     box-shadow: var(--shadow-card);
+    box-sizing: border-box;
+    overflow-y: scroll;
 }
 
-.containDialog header {
+.dialogContain {
+    overflow-y: scroll;
+
+}
+
+.dialogContain header {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: start;
     justify-content: space-between;
+    margin-bottom: 10px;
 }
 
-.containDialog header h2 {
+.dialogContain header h2 {
     font-weight: 600;
     font-size: 18px;
 }
 
 .btnCloseDialog {
-    cursor: pointer;
+    padding: 4px;
     background-color: transparent;
     border: 0px;
     border-radius: 100%;
+    transition: all 0.5s ease;
+}
+
+.btnCloseDialog:hover {
+    background-color: #7474742A;
+}
+
+.btnCloseDialog:focus, .btnCloseDialog:focus img {
+    background-color: #7474743F;
+    content: url('https://img.icons8.com/?size=20&id=46&format=png&color=FF0040');
+}
+
+.formDialog {
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+    gap: 20px;
+}
+
+.inputForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    gap: 7px;
+}
+
+label, .inputNameDialog input {
+    font-size: 14px;
+    font-weight: 450;
+}
+
+.inputDialog input, .inputDescriptionDialog textarea {
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    padding: 10px;
+    width: 100%;
+    background-color: transparent;
+}
+
+.inputDialog input:focus, .inputDescriptionDialog textarea:focus {
+    outline: 1px solid var(--color-primary);
+    border: 1px solid var(--color-bg-secondary);
+}
+
+.inputDescriptionDialog textarea {
+    resize: none;
+    height: 70px;
+}
+
+.containerSelectBox {
+    gap: 10px;
+}
+
+.containerSelectBox div {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.selectLenguage {
+    background-color: #202020;
+}
+
+.selectLenguage:hover {
+    box-shadow: 0px 0px 10px 3px rgba(91, 94, 226, 0.2);
+    background-color: #7376FF;
+}
+
+.selectLenguage:focus, .selectState:hover, .selectState:focus {
+    box-shadow: 0px 0px 10px 3px rgba(91, 94, 226, 0.2);
+    background-color: #202020;
+}
+
+.selectState {
+    background-color: #7376FF;
+}
+
+.selectState:focus {
+    box-shadow: 0px 0px 10px rgba(91, 94, 226, 0.2);
+    border-radius: 30px;
+}
+
+.active {
+    background-color: #7376FF;
+}
+
+.inactive {
+    background-color: #DADADA;
+}
+
+.error {
+    background-color: #FF0040;
+}
+
+.containerInputs {
+    gap: 10px;
+}
+
+.containerButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    width: 100%;
+    gap: 10px;
+}
+
+.containerButton button {
+    padding: 7px 25px;
+    border-radius: 50px;
+    color: white;
+}
+
+.btnCancel {
+    background-color: #202020;
+    transition: all 0.5s ease;
+    border: 1px solid var(--color-border2);
+}
+
+.btnCreate {
+    background-color: #7376FF;
+    transition: all 0.5s ease;
+    border: none;
+}
+
+.containerButton button:hover {
+    box-shadow: 0px 0px 10px 3px rgba(91, 94, 226, 0.2);
 }

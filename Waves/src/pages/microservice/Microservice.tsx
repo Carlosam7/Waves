@@ -25,7 +25,6 @@ export function Microservice() {
         setServices(allServices);
     }
     return (
-        <>
             <main className={`${styles.container}`}>
                 <div className={stylesM.microserviceHeader}>
                     <div>
@@ -58,9 +57,7 @@ export function Microservice() {
                         ))
                     )}
                 </div>
+                <BoxDialog dialogRef={dialogEdit} />
             </main>
-            <BoxDialog dialogRef={dialogEdit} />
-            
-        </>
     )
 }

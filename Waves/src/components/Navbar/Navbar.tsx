@@ -3,35 +3,34 @@ import { NavLink } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { BarSetup } from '../atoms/BarSetup/BarSetup';
 import styles from './Navbar.module.css';
-import ThemeToggle from '../atoms/ThemeToggle/ThemeToggle';
 
 export function Navbar() {
     return(
-        <><ThemeToggle/>
-        <nav className={styles.navbar}>
-            <div className={styles.navbarHeadContainer}>
-                <section className={styles.navbarHead}>
-                    <div className={styles.sectionLeft}>
-                        <div className={styles.navbarIcon}>     🌊 Waves    </div>
-                    </div>
-                    <BarSetup />
-                    <div className={styles.sectionRight}>
-                        <a className={styles.optionLanguage} onClick={() => alert('Funcionalidad no implementada aún')}>
-                            <p>Lenguaje</p>
-                            <img className={styles.iconLanguage} src={`${useTheme().theme === 'dark' ? 'src/assets/icons/icon-language.png' : 'src/assets/icons/icon-language-black.png'}`} width={25} alt="icono de idioma" />
-                        </a>
-                        <section className={styles.userSection}>
-                            <div className={styles.userInfo}>
-                                <p className={styles.userName}>Carlos Arango</p>
-                                <p className={styles.userState}>Available</p>
-                            </div>
-                            <div className={styles.profileSection}>
-                                <img className={styles.profilePicture} src="src/assets/icons/icon-user-black.png" alt="Profile" />
-                            </div>
-                        </section>
-                    </div>
-                </section>
-            </div>
+        <>
+            <nav className={styles.navbar}>
+                <div className={styles.navbarHeadContainer}>
+                    <section className={styles.navbarHead}>
+                        <div className={styles.sectionLeft}>
+                            <div className={styles.navbarIcon}>     🌊 Waves    </div>
+                        </div>
+                        <BarSetup />
+                        <div className={styles.sectionRight}>
+                            <a className={styles.optionLanguage} onClick={() => alert('Funcionalidad no implementada aún')}>
+                                <p>Lenguaje</p>
+                                <img className={styles.iconLanguage} src={`${useTheme().theme === 'dark' ? 'src/assets/icons/icon-language.png' : 'src/assets/icons/icon-language-black.png'}`} width={25} alt="icono de idioma" />
+                            </a>
+                            <section className={styles.userSection}>
+                                <div className={styles.userInfo}>
+                                    <p className={styles.userName}>Carlos Arango</p>
+                                    <p className={styles.userState}>Available</p>
+                                </div>
+                                <div className={styles.profileSection}>
+                                    <img className={styles.profilePicture} src="src/assets/icons/icon-user-black.png" alt="Profile" />
+                                </div>
+                            </section>
+                        </div>
+                    </section>
+                </div>
 
                 <section className={styles.navbarLinks}>
                     <NavLink to="/" 
@@ -55,7 +54,7 @@ export function Navbar() {
                         <p>Settings</p>
                     </NavLink>
                 </section>
-        </nav>
+            </nav>
         </>
     )  
 }
