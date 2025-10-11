@@ -113,13 +113,11 @@ app.get("/verifyToken", async (req, res) => {
 
     res.status(200).json({ message: response?.data });
   } catch (err) {
-    console.error("Error:", err.response?.data || err.message);
-
-    res.status(err.response?.status || 500).json({
-      message: err.message,
-      status: err.response?.status,
-      data: err.response?.data || null,
-    });
+    console.error(err);
+    const status = err.status || 500;
+    res
+      .status(status)
+      .json({ error: err.message, status, statusText: err.statusText });
   }
 });
 
@@ -247,10 +245,12 @@ app.post("/db/delete", async (req, res) => {
 app.post("/deploy", async (req, res) => {
   try {
     const { name, code, accessToken, language } = req.body;
-    if (!name || !code)
+    if (!name || !code || !language)
       return res
         .status(400)
-        .json({ error: "Fields: name and code are required" });
+        .json({ error: "Fields: name, code and language are required" });
+    await verifyToken(accessToken);
+
     const serviceInfo = await createContainer(name, code, language);
 
     await fetch("http://localhost:3000/db/insert", {
@@ -273,9 +273,15 @@ app.post("/deploy", async (req, res) => {
       ...serviceInfo,
     });
   } catch (error) {
-    console.error("error:", error);
-    res.status(500).json({
-      error: { message: "Error deploying microservice", details: error },
+    console.error(error);
+    const status = error.status || 500;
+
+    res.status(status).json({
+      error:
+        status === 500
+          ? "Internal server error"
+          : error.statusText || "App error",
+      message: error.message || "Error deploying microservice",
     });
   }
 });

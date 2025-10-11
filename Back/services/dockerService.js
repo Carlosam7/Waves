@@ -1,6 +1,7 @@
 import fs from "fs";
 import getPort, { portNumbers } from "get-port";
 import { exec } from "child_process";
+import { error } from "console";
 
 function execPromise(cmd) {
   return new Promise((res, rej) => {
@@ -15,6 +16,14 @@ function getContainerConfig(language) {
   const path = `./containerConfig.json`;
   const configs = JSON.parse(fs.readFileSync(path, "utf-8"));
 
+  if (!configs[language]) {
+    const err = new Error(`${language} seems not to be a supported language`);
+    err.status = 400;
+    err.statusText = "Bad Request";
+    err.type = "Unsupported language";
+    throw err;
+  }
+
   return configs[language];
 }
 // const config = getContainerConfig("CS");
@@ -27,14 +36,13 @@ function getContainerConfig(language) {
 export async function createContainer(name, code, language) {
   const path = `./temp/${name}`;
   const port = await getPort({ port: portNumbers(5000, 8000) });
+  const containerConfig = getContainerConfig(language);
+  const dockerFile = containerConfig.dockerFile;
+  const entryPoint = containerConfig.entryPoint;
 
   if (!fs.existsSync(path)) {
     await fs.promises.mkdir(path, { recursive: true });
   }
-
-  const containerConfig = getContainerConfig(language);
-  const dockerFile = containerConfig.dockerFile;
-  const entryPoint = containerConfig.entryPoint;
 
   console.log({ message: `Setting container 📦⚙️`, dockerFile, entryPoint });
   await fs.promises.writeFile(`${path}/${entryPoint}`, code);
