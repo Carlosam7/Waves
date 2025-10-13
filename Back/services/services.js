@@ -36,6 +36,19 @@ export async function updateProxyRoutes(accessToken) {
     throw new Error(err);
   }
 }
-
 //updateProxyRoutes();
 //console.log(readServices()); // <-- Read the file
+
+export function verifyIfExist(name) {
+  const services = readProxyRoutes();
+
+  for (let s of services) {
+    if (s.route_name === name) {
+      const err = new Error("Microservice already exists");
+      err.status = 400;
+      err.statusText = "Bad request";
+      throw err;
+    }
+  }
+}
+//verifyIfExist("adder_csharp");
