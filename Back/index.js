@@ -1,11 +1,12 @@
 import "dotenv/config";
 import express from "express";
-import cors from 'cors'
+import cors from "cors";
 import { createContainer, deleteContainer } from "./services/dockerService.js";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import {
   readProxyRoutes,
   updateProxyRoutes,
+  verifyIfExist,
   writeProxyRoutes,
 } from "./services/services.js";
 import {
@@ -26,6 +27,11 @@ import {
 const app = express();
 const desiredPort = process.env.PORT ?? 3000;
 app.use(express.json());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 function updateRoutes() {
   const routes = readProxyRoutes();
@@ -147,7 +153,7 @@ app.get("/refreshToken", async (req, res) => {
   }
 });
 
-app.post("/db/read/:tableName", async (req, res) => {
+app.post("/db/read/:tableName", async (req, res, next) => {
   const { tableName } = req.params;
   const { params, accessToken } = req.body;
 
@@ -157,6 +163,7 @@ app.post("/db/read/:tableName", async (req, res) => {
   };  
 
   try {
+    await verifyToken(accessToken);
     console.log("📦 Sent to getTable:", {
       tableParams,
       accessToken: accessToken.slice(0, 10) + "...",
@@ -168,7 +175,7 @@ app.post("/db/read/:tableName", async (req, res) => {
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
 
-    res.status(err.response?.status || 500).json(err);
+    next(err);
   }
 });
 
@@ -190,10 +197,11 @@ app.post("/db/create", async (req, res) => {
   }
 });
 
-app.post("/db/insert", async (req, res) => {
+app.post("/db/insert", async (req, res, next) => {
   const { tableName, records, accessToken } = req.body;
 
   try {
+    await verifyToken(accessToken);
     const response = await insert(tableName, records, accessToken);
 
     res
@@ -201,12 +209,7 @@ app.post("/db/insert", async (req, res) => {
       .json({ message: "Inserted successfully", data: response?.data });
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
-
-    res.status(err.response?.status || 500).json({
-      message: err.message,
-      status: err.response?.status,
-      data: err.response?.data || null,
-    });
+    next(accessToken);
   }
 });
 
@@ -230,10 +233,11 @@ app.post("/db/update", async (req, res) => {
   }
 });
 
-app.post("/db/delete", async (req, res) => {
+app.post("/db/delete", async (req, res, next) => {
   const { data, accessToken } = req.body;
 
   try {
+    await verifyToken(accessToken);
     const response = await deleteFromTable(data, accessToken);
 
     res
@@ -241,16 +245,11 @@ app.post("/db/delete", async (req, res) => {
       .json({ message: "Deleted Successfully", data: response?.data });
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);
-
-    res.status(err.response?.status || 500).json({
-      message: err.message,
-      status: err.response?.status,
-      data: err.response?.data || null,
-    });
+    next(err);
   }
 });
 
-app.post("/deploy", async (req, res) => {
+app.post("/deploy", async (req, res, next) => {
   try {
     const { name, code, accessToken, language } = req.body;
     if (!name || !code || !language)
@@ -258,6 +257,7 @@ app.post("/deploy", async (req, res) => {
         .status(400)
         .json({ error: "Fields: name, code and language are required" });
     await verifyToken(accessToken);
+    verifyIfExist(name);
 
     const serviceInfo = await createContainer(name, code, language);
 
@@ -282,22 +282,17 @@ app.post("/deploy", async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    const status = error.status || 500;
-
-    res.status(status).json({
-      error:
-        status === 500
-          ? "Internal server error"
-          : error.statusText || "App error",
-      message: error.message || "Error deploying microservice",
-    });
+    next(error);
   }
 });
 
-app.post("/ms/delete/:msName", async (req, res) => {
+app.post("/ms/delete/:msName", async (req, res, next) => {
   try {
     const { msName } = req.params;
     const { accessToken } = req.body;
+
+    await verifyToken(accessToken);
+
     await fetch("http://localhost:3000/db/delete", {
       method: "POST",
       headers: {
@@ -322,10 +317,20 @@ app.post("/ms/delete/:msName", async (req, res) => {
       .json({ message: `Microservice ${msName} deleted successfully` });
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    next(err);
   }
 });
 
 app.listen(desiredPort, () => {
   console.log(`Server is running on http://localhost:${desiredPort}`);
+});
+
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+
+  res.status(status).json({
+    error:
+      status === 500 ? "Internal server error" : err.statusText || "App error",
+    message: err.message || "An unexpected error ocurred",
+  });
 });

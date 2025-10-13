@@ -1,7 +1,6 @@
 import fs from "fs";
 import getPort, { portNumbers } from "get-port";
 import { exec } from "child_process";
-import { error } from "console";
 
 function execPromise(cmd) {
   return new Promise((res, rej) => {
@@ -11,6 +10,24 @@ function execPromise(cmd) {
     });
   });
 }
+
+// async function startDockerEngine() {
+//   try {
+//     await execPromise(`docker info`);
+//     console.log("docker is already running 🐋✅");
+//   } catch (err) {
+//     console.log("🚀 starting docker desktop ...");
+//     return new Promise((res, rej) => {
+//       exec(`docker desktop start`, (err, stdout, stderr) => {
+//         if (err) return rej(stderr);
+//         console.log("docker desktop started 🐋✅");
+//         res(stdout);
+//       });
+//     });
+//   }
+// }
+// const startDocker = await startDockerEngine();
+// console.log(startDocker);
 
 function getContainerConfig(language) {
   const path = `./containerConfig.json`;
@@ -30,7 +47,6 @@ function getContainerConfig(language) {
 // const dockerFile = config.dockerFile;
 // const entryPoint = config.entryPoint;
 // console.log(entryPoint);
-// console.log({ message: "Setting container 📦⚙️", dockerFile, entryPoint });
 
 // ------------------- export functions ---------------------------------
 export async function createContainer(name, code, language) {
@@ -40,22 +56,39 @@ export async function createContainer(name, code, language) {
   const dockerFile = containerConfig.dockerFile;
   const entryPoint = containerConfig.entryPoint;
 
+  // await startDockerEngine();
+  try {
+    await execPromise(`docker info`);
+  } catch (error) {
+    const err = new Error("docker engine is not running");
+    err.status = 503;
+    err.statusText = "Service Unavailable";
+    throw err;
+  }
+
   if (!fs.existsSync(path)) {
     await fs.promises.mkdir(path, { recursive: true });
   }
 
-  console.log({ message: `Setting container 📦⚙️`, dockerFile, entryPoint });
+  console.log(`📦 Configuring container...`);
+  console.log({ dockerFile, entryPoint, path });
+
   await fs.promises.writeFile(`${path}/${entryPoint}`, code);
   await fs.promises.writeFile(`${path}/Dockerfile`, dockerFile);
 
   const imageName = `${name}`;
+  console.log(`🐳 building image: ${imageName}`);
 
   await execPromise(`docker build -t ${imageName} ${path}`);
 
+  console.log(`🚀 running container...`);
   await execPromise(
     `docker run -d -p ${port}:5000 --name ${imageName}_c ${imageName}`
   );
 
+  console.log(
+    `✅ container ${imageName}_c running on http://localhost:${port}`
+  );
   return {
     name,
     port,
