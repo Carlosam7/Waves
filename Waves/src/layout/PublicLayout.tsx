@@ -1,14 +1,12 @@
 import { Outlet } from 'react-router-dom';
-import { Navbar } from '../components/Navbar/Navbar';
 import ThemeToggle from '../components/atoms/ThemeToggle/ThemeToggle';
-import '../App.css';
+import { NavbarPublic } from '../components/NavbarPublic/NavbarPublic';
 
-
-export function MainLayout() {
+export function PublicLayout() {
     return(
         <div className="content-app">
             <div className="app">
-                <Navbar />
+                <NavbarPublic/>
                 <main className='container'>
                     <Outlet />
                 </main>

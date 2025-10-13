@@ -12,9 +12,9 @@ interface MicroserviceCardProps {
 
 export function MicroserviceCard ({ service, onEdit, onDelete, onViewEndpoints } : MicroserviceCardProps) {
     const statusColor = {
-        active: 'linear-gradient(90deg, #5B5EE2 0%, #7376FF 100%)',
-        inactive: 'linear-gradient(90deg, #202020 0%, #505050 100%)',
-        error: 'linear-gradient(90deg, #FF5B5B 0%, #FF7373 100%)'
+        Active: 'linear-gradient(90deg, #5B5EE2 0%, #7376FF 100%)',
+        Inactive: 'linear-gradient(90deg, #202020 0%, #505050 100%)',
+        Error: 'linear-gradient(90deg, #FF5B5B 0%, #FF7373 100%)'
 
     }
 
@@ -44,26 +44,26 @@ export function MicroserviceCard ({ service, onEdit, onDelete, onViewEndpoints }
 
                     <div className={`${styles.tagsCard}`}>
                         <div className={`${styles.tagLanguage}`}>
-                            { service.lenguage === "python" ? iconLenguage.python :
-                            service.lenguage === "javascript" ? iconLenguage.js :
-                            service.lenguage === "c#" ? iconLenguage.csharp : null
+                            { service.language === "Python" ? iconLenguage.python :
+                            service.language === "JS" ? iconLenguage.js :
+                            service.language === "C#" ? iconLenguage.csharp : null
                             }
-                            { service.lenguage }
+                            { service.language }
                         </div>
                         <div>
-                            { service.version }
+                            { service.image }
                         </div>
-                        { service.tags.map((tag) => (
+                        {/* { service.tags.map((tag) => (
                             <div key={tag}>
                                 { tag }
                             </div>
-                        ))}
+                        ))} */}
                     </div>
                 </section>
 
                 <section className={`${styles.footCard}`}>
                     <div className={styles.pathService}>
-                        <img src={`${useTheme().theme==='dark' ? 'src/assets/icons/icon-url.png' : 'src/assets/icons/icon-url-black.png'}`} alt="icono url" width={20} style={{userSelect: "none"}}/>
+                        <img src={`${useTheme().theme==='dark' ? '/icons/icon-url.png' : '/icons/icon-url-black.png'}`} alt="icono url" width={20} style={{userSelect: "none"}}/>
                         <span>{ service.baseUrl }</span>
                     </div>
 
@@ -72,10 +72,10 @@ export function MicroserviceCard ({ service, onEdit, onDelete, onViewEndpoints }
                             { service.endpoints.length } Endpoints
                         </button>
                         <button className={styles.btnEdit} onClick={() => onEdit(service)}>
-                            <img src="src/assets/icons/icon-edit.png" alt="icono botón editar" width={20}/>
+                            <img src="/icons/icon-edit.png" alt="icono botón editar" width={20}/>
                         </button>
                         <button className={styles.btnDelete} onClick={() => onDelete(service)}>
-                            <img src="src/assets/icons/icon-delete.png" alt="icono eliminar" width={20}/>
+                            <img src="/icons/icon-delete.png" alt="icono eliminar" width={20}/>
                         </button>
                     </div>
                 </section>

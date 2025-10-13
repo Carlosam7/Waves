@@ -17,7 +17,7 @@ export function Navbar() {
                         <div className={styles.sectionRight}>
                             <a className={styles.optionLanguage} onClick={() => alert('Funcionalidad no implementada aún')}>
                                 <p>Lenguaje</p>
-                                <img className={styles.iconLanguage} src={`${useTheme().theme === 'dark' ? 'src/assets/icons/icon-language.png' : 'src/assets/icons/icon-language-black.png'}`} width={25} alt="icono de idioma" />
+                                <img className={styles.iconLanguage} src={`${useTheme().theme === 'dark' ? '/icons/icon-language.png' : '/icons/icon-language-black.png'}`} width={25} alt="icono de idioma" />
                             </a>
                             <section className={styles.userSection}>
                                 <div className={styles.userInfo}>
@@ -25,7 +25,7 @@ export function Navbar() {
                                     <p className={styles.userState}>Available</p>
                                 </div>
                                 <div className={styles.profileSection}>
-                                    <img className={styles.profilePicture} src="src/assets/icons/icon-user-black.png" alt="Profile" />
+                                    <img className={styles.profilePicture} src="/icons/icon-user-black.png" alt="Profile" />
                                 </div>
                             </section>
                         </div>
@@ -33,24 +33,24 @@ export function Navbar() {
                 </div>
 
                 <section className={styles.navbarLinks}>
-                    <NavLink to="/" 
+                    <NavLink to="/app/dashboard" 
                         className={({isActive}) => isActive ? `${styles.iconDashboard} ${styles.active}` : styles.iconDashboardBlack}>
-                        <img src={`${useTheme().theme === 'dark' ? 'src/assets/icons/icon-dashboard.png' : 'src/assets/icons/icon-dashboard-black.png'}`} alt="icono dashboard" />
+                        <img src={`${useTheme().theme === 'dark' ? '/icons/icon-dashboard.png' : '/icons/icon-dashboard-black.png'}`} alt="icono dashboard" />
                         <p>Dashboard</p>
                     </NavLink>
                     <NavLink to='microservice' 
                         className={({isActive}) => isActive ? `${styles.iconMicroservice} ${styles.active}` : styles.iconMicroserviceBlack}>
-                        <img src={`${useTheme().theme === 'dark' ? 'src/assets/icons/icon-box.png' : 'src/assets/icons/icon-box-black.png'}`} alt="icono dashboard" />
+                        <img src={`${useTheme().theme === 'dark' ? '/icons/icon-box.png' : '/icons/icon-box-black.png'}`} alt="icono dashboard" />
                         <p>Microservice</p>
                     </NavLink>
                     <NavLink to='favorites'
                         className={({isActive}) => isActive ? `${styles.iconFavorite} ${styles.active}` : styles.iconFavoriteBlack}>
-                        <img src={`${useTheme().theme === 'dark' ? 'src/assets/icons/icon-heart.png' : 'src/assets/icons/icon-heart-black.png'}`} alt="icono dashboard" />
+                        <img src={`${useTheme().theme === 'dark' ? '/icons/icon-heart.png' : '/icons/icon-heart-black.png'}`} alt="icono dashboard" />
                         <p>Favorites</p>
                     </NavLink>
                     <NavLink to='settings'
                         className={({isActive}) => isActive ? `${styles.iconSetting} ${styles.active}` : styles.iconSettingBlack}>
-                        <img src={`${useTheme().theme === 'dark' ? 'src/assets/icons/icon-setting.png' : 'src/assets/icons/icon-setting-black.png'}`} alt="icono dashboard" />
+                        <img src={`${useTheme().theme === 'dark' ? '/icons/icon-setting.png' : '/icons/icon-setting-black.png'}`} alt="icono dashboard" />
                         <p>Settings</p>
                     </NavLink>
                 </section>

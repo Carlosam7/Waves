@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import cors from 'cors'
 import { createContainer, deleteContainer } from "./services/dockerService.js";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import {
@@ -42,6 +43,13 @@ function updateRoutes() {
   }
 }
 updateRoutes();
+
+app.use(cors({
+    origin: true, // URL de tu frontend Vite
+    credentials: true, // Si usas cookies o auth headers
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+}));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -146,7 +154,7 @@ app.post("/db/read/:tableName", async (req, res) => {
   const tableParams = {
     tableName,
     ...params,
-  };
+  };  
 
   try {
     console.log("📦 Sent to getTable:", {

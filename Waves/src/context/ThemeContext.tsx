@@ -1,11 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react'
-
-type Theme = 'light' | 'dark';
-interface ThemeContextType {
-    theme: Theme;
-    toggleTheme: () => void;
-}
+import type { Theme, ThemeContextType } from '../lib/types';
 
 const ThemeContext = createContext<ThemeContextType | undefined > (undefined);
 
@@ -16,7 +11,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         const storedTheme = localStorage.getItem("theme") as Theme | null;
         if (storedTheme) {
             setTheme(storedTheme);
-            document.body.classList.toggle("dark", theme==='dark');
+            document.body.classList.toggle("dark", storedTheme==='dark');
             // document.documentElement.setAttribute("data-theme", storedTheme)
         }
     }, []);

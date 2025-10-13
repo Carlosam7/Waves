@@ -1,0 +1,54 @@
+.navbarP, .options {
+    top: 0;
+    position: sticky;
+    z-index: 100;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    width: 100vw;
+    min-width: 950px;
+    max-width: 1700px;
+    background-color: transparent;
+    height: 100px;
+    padding: 50px 30px;
+}
+
+.options {
+    font-size: 14px;
+    gap: 50px;
+    width: 100%;
+    background-color: transparent;
+}
+
+.option:hover {
+    color: #7376FF;
+}
+
+.btnAction {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    padding: 10px 20px;
+    width: 100px;
+    height: 40px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(45deg, #5B5EE2, #7376FF, #896bff);
+    background-size: 400% 400%;
+    transition: all 0.5s ease;
+    animation: gradientShift 5s ease infinite;
+}
+
+.btnAction:hover {
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    animation: gradientShift 3s ease infinite;
+    transform: scale(1.02);
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}

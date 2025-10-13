@@ -28,20 +28,10 @@ export const logout = (token) => {
   });
 };
 
-export const verifyToken = async (token) => {
-  try {
-    const response = await API.get(`/auth/${PROJECT_ID}/verify-token`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response;
-  } catch (error) {
-    const err = new Error(
-      error.response?.status === 401 ? "Expired token" : "Error verifying token"
-    );
-    err.status = error.response?.status || 500;
-    err.statusText = error.response?.statusText;
-    throw err;
-  }
+export const verifyToken = (token) => {
+  return API.get(`/auth/${PROJECT_ID}/verify-token`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 };
 
 export const refreshToken = (rToken) => {

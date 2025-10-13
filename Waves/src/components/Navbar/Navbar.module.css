@@ -81,7 +81,7 @@
 }
 
 .optionLanguage:hover img {
-    content: url('../../assets/icons/icons-language-purple.png');
+    content: url('/icons/icons-language-purple.png');
 }
 
 .userSection {
@@ -149,16 +149,16 @@
 }
 
 .iconDashboardBlack:hover img {
-    content: url('src/assets/icons/icon-dashboard-purple.png');
+    content: url('/icons/icon-dashboard-purple.png');
 }
 .iconMicroserviceBlack:hover img {
-    content: url('src/assets/icons/icon-box-purple.png');
+    content: url('/icons/icon-box-purple.png');
 }
 .iconFavoriteBlack:hover img {
-    content: url('src/assets/icons/icon-heart-purple.png');
+    content: url('/icons/icon-heart-purple.png');
 }
 .iconSettingBlack:hover img {
-    content: url('src/assets/icons/icon-setting-purple.png');
+    content: url('/icons/icon-setting-purple.png');
 }
 
 .active p {
@@ -166,14 +166,14 @@
 }
 
 .iconDashboard img {
-    content: url('src/assets/icons/icon-dashboard-purple.png');
+    content: url('/icons/icon-dashboard-purple.png');
 }
 .iconMicroservice img {
-    content: url('src/assets/icons/icon-box-purple.png');
+    content: url('/icons/icon-box-purple.png');
 }
 .iconFavorite img {
-    content: url('src/assets/icons/icon-heart-purple.png');
+    content: url('/icons/icon-heart-purple.png');
 }
 .iconSetting img {
-    content: url('src/assets/icons/icon-setting-purple.png');
+    content: url('/icons/icon-setting-purple.png');
 }
