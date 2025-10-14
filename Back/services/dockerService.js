@@ -90,7 +90,7 @@ export async function createContainer(name, code, language) {
     `✅ container ${imageName}_c running on http://localhost:${port}`
   );
   return {
-    routeName: name,
+    name,
     port,
     url: `http://localhost:${port}`,
   };
