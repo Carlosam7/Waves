@@ -244,15 +244,20 @@ app.post("/db/delete", async (req, res, next) => {
 
 app.post("/deploy", async (req, res, next) => {
   try {
-    const { name, code, accessToken, language } = req.body;
-    if (!name || !code || !language)
+    const msData = req.body;
+    if (!msData.name || !msData.code || !msData.language)
       return res
         .status(400)
         .json({ error: "Fields: name, code and language are required" });
     await verifyToken(accessToken);
-    verifyIfExist(name);
+    verifyIfExist(msData.name);
 
-    const serviceInfo = await createContainer(name, code, language);
+    const serviceInfo = await createContainer(
+      msData.name,
+      msData.code,
+      msData.language
+    );
+    msData.url = serviceInfo.url;
 
     await fetch("http://localhost:3000/db/insert", {
       method: "POST",
@@ -260,8 +265,8 @@ app.post("/deploy", async (req, res, next) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        tableName: "route",
-        records: [{ route_name: serviceInfo.name, url: serviceInfo.url }],
+        tableName: "microservice",
+        records: [msData],
         accessToken,
       }),
     });
@@ -293,8 +298,8 @@ app.post("/ms/delete/:msName", async (req, res, next) => {
       },
       body: JSON.stringify({
         data: {
-          tableName: "route",
-          idColumn: "route_name",
+          tableName: "microservice",
+          idColumn: "routeName",
           idValue: msName,
         },
         accessToken,
