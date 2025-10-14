@@ -37,25 +37,26 @@ function updateRoutes() {
   const routes = readProxyRoutes();
 
   for (const service of routes) {
-    console.log(`Mapping route: /${service.route_name} -> ${service.url}`);
-    app.use(
-      `/${service.route_name}`,
-      createProxyMiddleware({
-        target: service.url,
-        changeOrigin: true,
-        pathRewrite: { [`/${service.route_name}`]: "" },
-      })
-    );
+    if (service.routeName && service.url) {
+      console.log(`Mapping route: /${service.routeName} -> ${service.url}`);
+      app.use(
+        `/${service.routeName}`,
+        createProxyMiddleware({
+          target: service.url,
+          changeOrigin: true,
+          pathRewrite: { [`/${service.routeName}`]: "" },
+        })
+      );
+    } else {
+      console.warn(
+        `Skipping route due to missing routeName or url: ${JSON.stringify(
+          service
+        )}`
+      );
+    }
   }
 }
 updateRoutes();
-
-app.use(cors({
-    origin: true, // URL de tu frontend Vite
-    credentials: true, // Si usas cookies o auth headers
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
-}));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -203,13 +204,14 @@ app.post("/db/insert", async (req, res, next) => {
   try {
     await verifyToken(accessToken);
     const response = await insert(tableName, records, accessToken);
+    await updateProxyRoutes();
 
     res
       .status(200)
       .json({ message: "Inserted successfully", data: response?.data });
   } catch (err) {
-    console.error("Error:", err.response?.data || err.message);
-    next(accessToken);
+    console.error(err);
+    next(err);
   }
 });
 
@@ -239,6 +241,7 @@ app.post("/db/delete", async (req, res, next) => {
   try {
     await verifyToken(accessToken);
     const response = await deleteFromTable(data, accessToken);
+        await updateProxyRoutes();
 
     res
       .status(200)
@@ -250,22 +253,22 @@ app.post("/db/delete", async (req, res, next) => {
 });
 
 app.post("/deploy", async (req, res, next) => {
+  // const { msData } = req.body;
+  // console.log([msData]);
   try {
-    const msData = req.body;
-    if (!msData.name || !msData.code || !msData.language)
+    const { msData, accessToken } = req.body;
+    if (!msData.routeName || !msData.code || !msData.language)
       return res
         .status(400)
         .json({ error: "Fields: name, code and language are required" });
     await verifyToken(accessToken);
-    verifyIfExist(msData.name);
-
+    verifyIfExist(msData.routeName);
     const serviceInfo = await createContainer(
-      msData.name,
+      msData.routeName,
       msData.code,
       msData.language
     );
     msData.url = serviceInfo.url;
-
     await fetch("http://localhost:3000/db/insert", {
       method: "POST",
       headers: {
@@ -277,16 +280,18 @@ app.post("/deploy", async (req, res, next) => {
         accessToken,
       }),
     });
-
     await updateProxyRoutes(accessToken);
     updateRoutes();
-
     res.json({
       message: "Microservice created successfully",
       ...serviceInfo,
     });
   } catch (error) {
     console.error(error);
+    if (error.message !== "Microservice already exists") {
+      const { msData } = req.body;
+      deleteContainer(msData.name);
+    }
     next(error);
   }
 });
