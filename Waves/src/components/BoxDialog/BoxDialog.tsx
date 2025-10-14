@@ -3,6 +3,7 @@ import type { BoxDialogProp, LenguageType, MicroserviceStatus } from '../../lib/
 import { useTheme } from '../../context/ThemeContext';
 import { useState } from 'react';
 import { EndPointForm } from '../EndPointForm/EndPointForm';
+import parseData from '../../hooks/parseData';
 
 
 export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveFunction }: BoxDialogProp) => {
@@ -14,11 +15,12 @@ export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveF
     const [selectedValue, setSelectedValue] = useState('Active')
     // const [color, setColor] = useState('#7376FF')
     const [claseColor, setClaseColor] = useState(colorState.purple)
+    const [nameFile, setNameFile] = useState('')
     
 
     const handleSelectChange = (event: any) => {
         const value = event.target.value;
-        console.log(value)
+        // console.log(value)
         setSelectedValue(value)
         
         value === 'Active'? setClaseColor(colorState.purple) ://('#7376FF') :
@@ -33,18 +35,24 @@ export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveF
         const file = e.target.files?.[0];
         if (!file) return;
 
+        const fileName = file.name;
+        const extension = fileName.split('.').pop()
+        const language = extension === 'js' ? 'JS' : extension === 'py' ? 'Python' : 'C#';
+        setNameFile(e.target.value)
         const reader = new FileReader();
         reader.onload = (event) => {
             const code = event.target?.result as string;
+            data.language = language
+
             setData({ ...data, code }); // Guardas el código en tu estado "data"
-            console.log('ESTE ES EL CÓDIGOOO', code)
+            // console.log('ESTE ES EL CÓDIGOOO', code)
         };
         reader.readAsText(file);
     };
 
 
     const activeFunctionCreateMicroservice = () => {
-        if(!data.name || !data.description || !data.image || !data.baseUrl || !data.endpoints) {
+        if(!data.routeName || !data.description || !data.endPoints) {
             alert("Por favor, completa todos los campos")
             return
         }
@@ -70,8 +78,8 @@ export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveF
                         <div className={`${styles.inputDialog} ${styles.inputForm}`}>
                             <label htmlFor="name">Name</label>
                             <input required id='name' name='name' type="text" autoComplete='false' placeholder='User Authentication Service' 
-                                value={data.name} 
-                                onChange={(e) => {setData(prev => ({...prev, name:e.target.value}))}}
+                                value={data.routeName} 
+                                onChange={(e) => {setData(prev => ({...prev, routeName:e.target.value}))}}
                             />
                         </div>
                         <div className={`${styles.inputDescriptionDialog} ${styles.inputForm}`}>
@@ -103,22 +111,6 @@ export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveF
                                 </select>
                             </div>
                         </div>
-                        <div className={styles.containerInputs}>
-                            <div className={`${styles.inputDialog} ${styles.inputForm}`}>
-                                <label htmlFor="Urlb">URL base</label>
-                                <input required id='Urlb' name='baseUrl' type="text" placeholder='https://api.example.com'
-                                    value={data.baseUrl} 
-                                    onChange={(e) => {setData(prev => ({...prev, baseUrl:e.target.value}))}}
-                                />
-                            </div>
-                            <div className={`${styles.inputDialog} ${styles.inputForm}`}>
-                                <label htmlFor="Version">Versión</label>
-                                <input required type="text" name='image' id='Image' placeholder='1.0.0'
-                                    value={data.image} 
-                                    onChange={(e) => {setData(prev => ({...prev, image:e.target.value}))}}
-                                />
-                            </div>
-                        </div>
                         <div>
                             Aquí va el componente de Tags
                         </div>
@@ -130,6 +122,7 @@ export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveF
                             <input id='submitCode' type="file" accept='.py, .js, .cs'
                                 onChange={(e) => handleFileChange(e)}
                             />
+                            <p>{nameFile}</p>
                         </div>
 
                         <div className={styles.containerButton}>

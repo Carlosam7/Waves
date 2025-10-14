@@ -144,10 +144,6 @@ label, .inputNameDialog input {
     background-color: #FF0040;
 }
 
-.containerInputs {
-    gap: 10px;
-}
-
 .containerButton{
     display: flex;
     flex-direction: row;
@@ -181,11 +177,11 @@ label, .inputNameDialog input {
 
 .containerCode {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
-    background-color: #7376FF;
-
+    overflow: hidden;
 }
 
 .containerCode input{
@@ -199,10 +195,14 @@ label, .inputNameDialog input {
     width: 100%;
     height: 100%;
     padding: 10px;
-    background-color: #FF0040;
+    border: 1px solid #7376FF;
+    border-radius: 10px;
+    background-color: #7376FF30;
 }
 
-.selectLenguage:disabled{
-    opacity: 100%;
-    border: 2px solid #7376FF;
+.containerCode p {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    letter-spacing: 2px;
+    color: #7376FF
 }

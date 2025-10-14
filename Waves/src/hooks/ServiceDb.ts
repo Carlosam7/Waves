@@ -1,4 +1,4 @@
-import type { Microservice } from "../lib/types";
+import type { Microservice, MicroserviceToSend } from "../lib/types";
 const MICROSERVICES_KEY = 'microservices';
 
 export const getDataTable = async (nameTable:string) => {
@@ -15,10 +15,10 @@ export const getDataTable = async (nameTable:string) => {
                 accessToken: localStorage.getItem('accessToken')
             })
         })
-        console.log('QUÉ DIJO', response)
+        // console.log('QUÉ DIJO', response)
         if (!response.ok) {
             const errorData = await response.json();
-            console.log('Error al obtener datos', errorData);
+            // console.log('Error al obtener datos', errorData);
             return {
                 success: false,
                 data: errorData.data,
@@ -28,7 +28,7 @@ export const getDataTable = async (nameTable:string) => {
         
         if (response.ok) {
             const data = await response.json();
-            console.log('Datos obtenidos exitosamente: ', data)
+            // console.log('Datos obtenidos exitosamente: ', data)
             return {
                 success: true,
                 data: data.data,
@@ -61,10 +61,10 @@ export const microservice = {
         //         error: null
         //     } ;
         // }else{
-            data = await getDataTable('Microservice');
-            console.log('Esta fue la respuesta', data)
+            data = await getDataTable('microservice');
+            // console.log('Esta fue la respuesta', data)
             if (data.success){
-                console.log('ESTE ES EL TAMÑO DE LOS DATOS: ', data.data.length)
+                // console.log('ESTE ES EL TAMÑO DE LOS DATOS: ', data.data.length)
                 if (data.data != 0){
                     localStorage.setItem(MICROSERVICES_KEY, JSON.stringify(data.data))
                 }
@@ -84,12 +84,13 @@ export const microservice = {
         
     },
 
-    create: async(dataMicroservice: any) => {
+    create: async(dataMicroservice: Omit<MicroserviceToSend, 'createdAt' | 'updatedAt'>) => {
+        // console.log('VOY EMPEZANDO')
         if (!dataMicroservice){
             return {succes: false, data:null, error: 'No data provider'}
         }
         
-        const newService: Microservice = {
+        const newService: MicroserviceToSend = {
             ...dataMicroservice,
             createdAt: new Date(),
             updatedAt: new Date()
@@ -102,13 +103,14 @@ export const microservice = {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                tableName: 'Microservice',
+                tableName: 'microservice',
                 records: [newService],
                 accessToken: localStorage.getItem('accessToken')
                 })
             });
 
             const result = await response.json()
+            // console.log('ESTE ES EL RESULT: ', result)
             if (!response.ok) {
                 return {
                     success: false,
@@ -116,10 +118,16 @@ export const microservice = {
                     error: result.message || 'Create microservice was failed'
                 }
             }
+            // console.log('Esto es longitud: ', result.data.inserted.length)
+            // console.log('ESTA ES LA RAZÓN: ', result.data.skipped[0])
+            if (result.data.inserted.length === 0){
+                const reason = result.data.skipped[0]
+                return {success: false, data: null, error: reason.reason}
+            }
             
             const services = await microservice.getAll()
             if (services.success){
-                console.log('Creando microservicio :)');
+                // console.log('Creando microservicio :)');
                 const updated = [...services.data as Microservice[], newService]
                 localStorage.setItem(MICROSERVICES_KEY, JSON.stringify(updated));
             }
@@ -127,6 +135,81 @@ export const microservice = {
         }catch (error:any) {
             console.error('Error creating microservice: ', error);
             return { success: false, data: null, error: error};
+        }
+    },
+
+    deploy: async (dataMicroservice: Omit<MicroserviceToSend, 'createdAt' | 'updatedAt'>) => {
+        if (!dataMicroservice){
+            return {succes: false, data:null, error: 'No data provider'}
+        }
+        
+        const newService: MicroserviceToSend = {
+            ...dataMicroservice,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        }
+
+        console.log('ESTOS SON LOS DATOS QUE ENVIARÉ A LA PETICIÓN: ', newService)
+        try {
+            const response = await fetch('http://localhost:3000/deploy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    msData:         newService,
+                    accessToken:    localStorage.getItem('accessToken'),
+                })
+            });
+
+            const result = await response.json()
+            console.log('ESTE ES EL RESULTADO: ', result)
+            if (!response.ok) {
+                return {
+                    success: false,
+                    data: result.data,
+                    error: result.message || 'Create microservice was failed'
+                }
+            }
+            // console.log('Esto es longitud: ', result.data.inserted.length)
+            // console.log('ESTA ES LA RAZÓN: ', result.data.skipped[0])
+            if (result.data.inserted.length === 0){
+                const reason = result.data.skipped[0]
+                return {success: false, data: null, error: reason.reason}
+            }
+            
+            const services = await microservice.getAll()
+            if (services.success){
+                // console.log('Creando microservicio :)');
+                const updated = [...services.data as Microservice[], newService]
+                localStorage.setItem(MICROSERVICES_KEY, JSON.stringify(updated));
+            }
+            return {success: true, data: result, error: null}
+        }catch (error:any) {
+            console.error('Error creating microservice: ', error);
+            return { success: false, data: null, error: error};
+        }
+    },
+
+    delete: (nameMicroservice: string) => {
+        if (!nameMicroservice) {
+            return { success: false, data: null, error: 'The Microservice does not exist'
+            }
+        }
+
+        try {
+            // const response = fetch(`http://localhost:3000/${nameMicroservice}`, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: {
+            //         accessToken: localStorage.getItem('accessToken')
+            //     }
+            // })
+
+        } catch (error) {
+
         }
     }
 };

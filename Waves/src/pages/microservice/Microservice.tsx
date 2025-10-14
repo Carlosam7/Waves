@@ -19,16 +19,16 @@ export function Microservice() {
 
     const loadServices = async () => {
         const allServices = await microservice.getAll();
-        console.log('Esto es all: ', allServices)
+        // console.log('Esto es all: ', allServices)
         if(!allServices){
             setServices([])
         }else {
             const data = allServices.data;
             setServices(data)
-            console.log('Esto es services. ', services)
+            // console.log('Esto es services. ', services)
         }
     }
-    console.log('tamaño: ', services.length)
+    // console.log('tamaño: ', services.length)
 
     return (
             <main className={`${styles.container}`}>

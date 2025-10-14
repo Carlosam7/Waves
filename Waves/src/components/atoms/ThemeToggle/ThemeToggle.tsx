@@ -15,7 +15,7 @@ export default function ThemeToggle() {
         toggleTheme();
     }
 
-    console.log(theme)
+    // console.log(theme)
     return (
         <>
         <button onClick={()=>{handleClick()}} className={`${styles.transition} ${rotating ? styles.rotating : ''}`}>

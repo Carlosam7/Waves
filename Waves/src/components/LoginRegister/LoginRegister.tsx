@@ -40,9 +40,9 @@ export const LoginRegister = ({ typeForm } : LoginRegisterProp) => {
             setErrorRegister('');
             try {
                 const result = await signUp(dataRegister);
-                console.log('Peticion hecha: ', result)
+                // console.log('Peticion hecha: ', result)
             if (result.success) {
-                console.log('✅ Authentication successful, redirecting...')
+                // console.log('✅ Authentication successful, redirecting...')
                 alert('Registro exitoso!');
                 navigate('/app/dashboard');
 
@@ -53,14 +53,14 @@ export const LoginRegister = ({ typeForm } : LoginRegisterProp) => {
                 setErrorRegister('Unexpected error occurred');
                 console.error('Unexpected error ', error)
             }
-            console.log(dataRegister)
+            // console.log(dataRegister)
         }
 
         if (typeForm === 'Log in') {
-            console.log('Esto es login.')
+            // console.log('Esto es login.')
             try {
                 const result = await login(dataLogin);
-                console.log('Peticion hecha: ', result)
+                // console.log('Peticion hecha: ', result)
             if (result.success) {
                 alert('Registro exitoso!');
                 navigate('/app/dashboard');
@@ -71,7 +71,7 @@ export const LoginRegister = ({ typeForm } : LoginRegisterProp) => {
                 setErrorRegister('Unexpected error occurred');
                 console.error('Unexpected error ', error)
             }
-            console.log(dataLogin)
+            // console.log(dataLogin)
         }
     }
 

@@ -51,8 +51,8 @@ export function AuthProvider ({ children }: {children: ReactNode}) {
         try {
             const refresh = localStorage.getItem('refreshToken');
 
-            console.log('Este es el token viejo: ', localStorage.getItem('accessToken'))
-            console.log('Este es el refresh: ', refresh)
+            // console.log('Este es el token viejo: ', localStorage.getItem('accessToken'))
+            // console.log('Este es el refresh: ', refresh)
             if (!refresh){
                 throw new Error('No refresh Token');
             }
@@ -64,15 +64,15 @@ export function AuthProvider ({ children }: {children: ReactNode}) {
             }
 
             const data = await refreshTokenRequest.json();
-            console.log('Esta es la respuestra del try: ', data)
+            // console.log('Esta es la respuestra del try: ', data)
             const { accessToken, refreshToken } = data.message;
 
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
 
-            console.log('Estos son los nuevos token:')
-            console.log('token:', localStorage.getItem('accessToken'))
-            console.log('Refresh token:', localStorage.getItem('refreshToken'))
+            // console.log('Estos son los nuevos token:')
+            // console.log('token:', localStorage.getItem('accessToken'))
+            // console.log('Refresh token:', localStorage.getItem('refreshToken'))
 
             setIsAuthenticated(true);
            
@@ -108,14 +108,14 @@ export function AuthProvider ({ children }: {children: ReactNode}) {
                 };
             }
             const data = await response.json();
-            console.log('estos son los datos, dería haber un accesToken', data);
+            // console.log('estos son los datos, dería haber un accesToken', data);
             const { accessToken, refreshToken } = data.userData;
 
             localStorage.setItem('accessToken', accessToken);
-            console.log('aquí esta el accessToken: ', accessToken)
+            // console.log('aquí esta el accessToken: ', accessToken)
             localStorage.setItem('refreshToken', refreshToken);
             localStorage.setItem('userData', JSON.stringify({name: '1', email: loginData.email}));
-            console.log('Aquí están los datos del usuario: ', JSON.stringify({name: '1', email: loginData.email}) )
+            // console.log('Aquí están los datos del usuario: ', JSON.stringify({name: '1', email: loginData.email}) )
 
             setUser({name: '1', email: loginData.email});
             setIsAuthenticated(true);
@@ -133,7 +133,7 @@ export function AuthProvider ({ children }: {children: ReactNode}) {
 
     //Register
     const signUp = async (registerData: RegisterData): Promise<{success: boolean; data?: any; error?:any}> => {
-        console.log('sending signup data: ', registerData);
+        // console.log('sending signup data: ', registerData);
         try {
             const response = await fetch('http://localhost:3000/signup', {
                 method: 'POST',
@@ -143,7 +143,7 @@ export function AuthProvider ({ children }: {children: ReactNode}) {
                 body: JSON.stringify(registerData)
             });
 
-            console.log('response: ', response.status);
+            // console.log('response: ', response.status);
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -156,7 +156,7 @@ export function AuthProvider ({ children }: {children: ReactNode}) {
             }
 
             const data = await response.json();
-            console.log('Success response:', data);
+            // console.log('Success response:', data);
             const { accessToken, refreshToken, user: userData } = data;
 
             localStorage.setItem('accessToken', accessToken);

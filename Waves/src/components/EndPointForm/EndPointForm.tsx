@@ -8,14 +8,14 @@ export const EndPointForm = ({ data, setData }: EndPointFormProps) => {
     const addEndpoint = () => {
         setData(prev => ({
             ...prev,
-            endpoints: [...prev.endpoints, endpoint]
+            endPoints: [...prev.endPoints, endpoint]
         }));
         setEndpoint({ "method": 'GET', "path": '' }); // limpiar campos
     }
 
     const deleteEndpoint = (index: number) => {
         const prevData = structuredClone(data);
-        prevData.endpoints.splice(index, 1)
+        prevData.endPoints.splice(index, 1)
         setData(prevData)
     }
 
@@ -47,9 +47,9 @@ export const EndPointForm = ({ data, setData }: EndPointFormProps) => {
                     </div>
                 </div>
 
-                { data.endpoints.length === 0 ? (null) :
+                { data.endPoints.length === 0 ? (null) :
                     (
-                        data.endpoints.map ((endpoint, index) => (
+                        data.endPoints.map ((endpoint, index) => (
                             <div key={`${index}`} className={styles.itemEndpoint}>
                                 <h6 >{endpoint.method}</h6>
                                 <button onClick={()=>deleteEndpoint(index)}>

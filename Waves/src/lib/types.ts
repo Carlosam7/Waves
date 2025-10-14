@@ -12,17 +12,33 @@ export type EndPointFormProps = {
 }
 
 export interface Microservice {
-    name: string;
+    routeName: string;
+    url: string;
+    status: MicroserviceStatus;
     description: string;
     language: LenguageType;
-    status: MicroserviceStatus;
-    baseUrl: string;
-    endpoints: Endpoint[];
+    endPoints: Endpoint[];
+    code: string;
     createdAt: Date;
     updatedAt: Date;
-    image: string;
-    tags: string[];
+    // tags: string[];
+}
+
+export interface EndpointToSend {
+    [clave: string] : string
+}
+
+export interface MicroserviceToSend {
+    routeName: string;
+    url: string;
+    status: MicroserviceStatus;
+    description: string;
+    language: LenguageType;    
+    endpoints: EndpointToSend;
     code: string;
+    createdAt: Date;
+    updatedAt: Date;
+    // tags: string[];
 }
 
 export type Theme = 'light' | 'dark';

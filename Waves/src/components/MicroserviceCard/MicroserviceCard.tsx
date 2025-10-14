@@ -17,6 +17,9 @@ export function MicroserviceCard ({ service, onEdit, onDelete, onViewEndpoints }
         Error: 'linear-gradient(90deg, #FF5B5B 0%, #FF7373 100%)'
 
     }
+    // console.log('These are the endpoints: ', service.endpoints)
+    // console.log('This is the code: ', service.code)
+
 
     const iconLenguage = {
         python: <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 48 48"> 
@@ -36,7 +39,7 @@ export function MicroserviceCard ({ service, onEdit, onDelete, onViewEndpoints }
                 <section>
                     <div className={styles.headCard}>
                         <div>
-                            <h3>{service.name}</h3>
+                            <h3>{service.routeName}</h3>
                             <button style={{ background: statusColor[service.status], color: "white"}}>    {service.status}    </button>
                         </div>
                         <p>     {service.description}   </p>
@@ -50,9 +53,6 @@ export function MicroserviceCard ({ service, onEdit, onDelete, onViewEndpoints }
                             }
                             { service.language }
                         </div>
-                        <div>
-                            { service.image }
-                        </div>
                         {/* { service.tags.map((tag) => (
                             <div key={tag}>
                                 { tag }
@@ -64,12 +64,12 @@ export function MicroserviceCard ({ service, onEdit, onDelete, onViewEndpoints }
                 <section className={`${styles.footCard}`}>
                     <div className={styles.pathService}>
                         <img src={`${useTheme().theme==='dark' ? '/icons/icon-url.png' : '/icons/icon-url-black.png'}`} alt="icono url" width={20} style={{userSelect: "none"}}/>
-                        <span>{ service.baseUrl }</span>
+                        <span>{ service.url }</span>
                     </div>
 
                     <div className={styles.btnsCard}>
                         <button className={`${styles.btnViewEndpoint}`} onClick={() => onViewEndpoints(service)}>
-                            { service.endpoints.length } Endpoints
+                            { Object.keys(service.endPoints).length } Endpoints
                         </button>
                         <button className={styles.btnEdit} onClick={() => onEdit(service)}>
                             <img src="/icons/icon-edit.png" alt="icono botón editar" width={20}/>
