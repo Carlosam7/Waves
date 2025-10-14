@@ -6,6 +6,7 @@ export function readProxyRoutes() {
   if (!fs.existsSync(SERVICES_FILE)) return {};
   return JSON.parse(fs.readFileSync(SERVICES_FILE, "utf-8"));
 }
+console.log(readProxyRoutes());
 
 export function writeProxyRoutes(services) {
   try {
@@ -18,7 +19,7 @@ export function writeProxyRoutes(services) {
 
 export async function updateProxyRoutes(accessToken) {
   try {
-    const response = await fetch("http://localhost:3000/db/read/route", {
+    const response = await fetch("http://localhost:3000/db/read/microservice", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
