@@ -340,7 +340,7 @@ app.post("/ms/delete/:msName", async (req, res, next) => {
 
 app.post("/ms/update", async (req, res, next) => {
   try {
-    let { data, accessToken } = req.body;
+    const { data, accessToken } = req.body;
 
     await verifyToken(accessToken);
     if (!verifyIfExist(data.idValue)) {
@@ -356,7 +356,7 @@ app.post("/ms/update", async (req, res, next) => {
       data.updates.code,
       data.updates.language
     );
-    data.url = newContainer.url;
+    data.updates.url = newContainer.url;
 
     await fetch("http://localhost:3000/db/update", {
       method: "POST",
@@ -372,7 +372,7 @@ app.post("/ms/update", async (req, res, next) => {
     await updateProxyRoutes(accessToken);
     updateRoutes();
 
-    res.status(200).json({ message: "Microservice updated succesfully", data });
+    // res.status(200).json({ message: "Microservice updated succesfully", data });
   } catch (err) {
     console.log(err);
     next(err);
