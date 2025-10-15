@@ -11,24 +11,6 @@ function execPromise(cmd) {
   });
 }
 
-// async function startDockerEngine() {
-//   try {
-//     await execPromise(`docker info`);
-//     console.log("docker is already running 🐋✅");
-//   } catch (err) {
-//     console.log("🚀 starting docker desktop ...");
-//     return new Promise((res, rej) => {
-//       exec(`docker desktop start`, (err, stdout, stderr) => {
-//         if (err) return rej(stderr);
-//         console.log("docker desktop started 🐋✅");
-//         res(stdout);
-//       });
-//     });
-//   }
-// }
-// const startDocker = await startDockerEngine();
-// console.log(startDocker);
-
 function getContainerConfig(language) {
   const path = `./containerConfig.json`;
   const configs = JSON.parse(fs.readFileSync(path, "utf-8"));
@@ -43,10 +25,6 @@ function getContainerConfig(language) {
 
   return configs[language];
 }
-// const config = getContainerConfig("CS");
-// const dockerFile = config.dockerFile;
-// const entryPoint = config.entryPoint;
-// console.log(entryPoint);
 
 // ------------------- export functions ---------------------------------
 export async function createContainer(name, code, language) {
@@ -56,7 +34,6 @@ export async function createContainer(name, code, language) {
   const dockerFile = containerConfig.dockerFile;
   const entryPoint = containerConfig.entryPoint;
 
-  // await startDockerEngine();
   try {
     await execPromise(`docker info`);
   } catch (error) {

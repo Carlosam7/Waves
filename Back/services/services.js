@@ -6,14 +6,15 @@ export function readProxyRoutes() {
   if (!fs.existsSync(SERVICES_FILE)) return {};
   return JSON.parse(fs.readFileSync(SERVICES_FILE, "utf-8"));
 }
-console.log(readProxyRoutes());
+//console.log(readProxyRoutes());
 
 export function writeProxyRoutes(services) {
   try {
     fs.writeFileSync(SERVICES_FILE, JSON.stringify(services, null, 2));
-    console.log(services);
+    //console.log(services);
   } catch (err) {
     console.log(err);
+    throw new Error(err);
   }
 }
 
@@ -29,27 +30,34 @@ export async function updateProxyRoutes(accessToken) {
 
     const routes = await response.json();
 
-    console.log(routes.data);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch routes: ${routes.message || response.statusText}`
+      );
+    }
+
+    if (!routes.data || !Array.isArray(routes.data)) {
+      throw new Error("Invalid routes format from database");
+    }
+
     writeProxyRoutes(routes.data);
     return routes.data;
   } catch (err) {
-    console.log(err);
-    throw new Error(err);
+    console.error("❌ Error updating proxy routes:", err.message);
+    throw err;
   }
 }
-//updateProxyRoutes();
+
 //console.log(readServices()); // <-- Read the file
 
 export function verifyIfExist(name) {
   const services = readProxyRoutes();
 
   for (let s of services) {
-    if (s.route_name === name) {
-      const err = new Error("Microservice already exists");
-      err.status = 400;
-      err.statusText = "Bad request";
-      throw err;
+    if (s.routeName === name) {
+      return true;
     }
   }
+  return false;
 }
 //verifyIfExist("adder_csharp");

@@ -29,9 +29,19 @@ export const logout = (token) => {
 };
 
 export const verifyToken = (token) => {
-  return API.get(`/auth/${PROJECT_ID}/verify-token`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  try {
+    return API.get(`/auth/${PROJECT_ID}/verify-token`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (error) {
+    console.log(error);
+    const status = error.status;
+    const err = new Error();
+    if (status === 401) {
+      err.message = "Invalid or expired token";
+      err.statusText = "Unauthorized";
+    }
+  }
 };
 
 export const refreshToken = (rToken) => {
