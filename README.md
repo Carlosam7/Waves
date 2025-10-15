@@ -181,3 +181,85 @@ Si quieres que adapte el README con más detalles (ejemplos de `.env`, comandos 
 
 ## Ejemplos de solicitudes y respuestas esperadas
 
+Ejemplo 1 - Deploy de microservicio en Python (Flask)
+
+  Request (POST http://localhost:3000/deploy)
+  Content-Type: application/json
+  {
+  "msData": {
+  "routeName": "adder_py",
+  "url": "http://localhost:5000/",
+  "status": "Active",
+  "description": "Microservicio suma en Flask",
+  "language": "Python",
+  "endPoints": {
+  "/": "GET",
+  "/sumar": "POST"
+  },
+  "code": "from flask import Flask, request, jsonify\napp = Flask(name)\n\n@app.route('/')\ndef home():\n return jsonify({'mensaje': 'Microservicio adder en Flask'})\n\n@app.route('/sumar', methods=['POST'])\ndef sumar():\n data = request.get_json()\n a = float(data.get('a', 0))\n b = float(data.get('b', 0))\n return jsonify({'resultado': a + b})\n\nif name == 'main':\n app.run(host='0.0.0.0', port=5000)"
+  },
+  "accessToken": "<ACCESS_TOKEN_VALIDO>"
+  }
+
+Respuesta Esperada:
+{
+"message": "Microservice created successfully",
+"routeName": "adder_py",
+"port": 5010,
+"url": "http://localhost:5010"
+}
+
+
+Ejemplo 2 — Deploy de microservicio en JavaScript (Node + Express)
+
+Request (POST http://localhost:3000/deploy)
+Content-Type: application/json
+{
+"msData": {
+"routeName": "adder_js",
+"url": "http://localhost:5000/",
+"status": "Active",
+"description": "Microservicio suma en Node/Express",
+"language": "JS",
+"endPoints": {
+"/": "GET",
+"/sumar": "GET"
+},
+"code": "const express = require('express');\nconst app = express();\napp.use(express.json());\napp.get('/', (req, res) => res.json({ mensaje: 'Adder JS' }));\napp.get('/sumar', (req, res) => {\n const a = parseFloat(req.query.a || 0);\n const b = parseFloat(req.query.b || 0);\n res.json({ resultado: a + b });\n});\napp.listen(5000, '0.0.0.0');"
+},
+"accessToken": "<ACCESS_TOKEN_VALIDO>"
+}
+
+Respuesta esperada — Caso éxito (HTTP 200)
+{
+"message": "Microservice created successfully",
+"routeName": "adder_js",
+"port": 5021,
+"url": "http://localhost:5021"
+}
+
+
+Ejemplo 3 — Deploy de microservicio en Csharp
+{
+  "msData": {
+    "routeName": "adder_csharp",
+    "url": "http://localhost:5000/",
+    "status": "Active",
+    "description": "hola bla bla",
+    "language": "C#",
+    "endPoints": {
+      "/sumar": "GET",
+      "/saludar": "POST"
+    },
+    "code": "using Microsoft.AspNetCore.Builder;\nusing Microsoft.AspNetCore.Http;\nusing Microsoft.Extensions.Hosting;\n\nvar builder = WebApplication.CreateBuilder(args);\nvar app = builder.Build();\n\napp.MapGet("/", (int a, int b) => Results.Json(new { resultado = a + b }));\n\napp.Run("http://0.0.0.0:5000/");"
+  },
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YzUwMmRlZi0yODRlLTQ2MjMtYmRiZi05NjgyMzMyYjliNjMiLCJlbWFpbCI6ImVkYWR1bEB1bmlub3J0ZS5lZHUuY28iLCJkYk5hbWUiOiJvbGFfYTM0M2YzMDczNCIsInJvbGVJZCI6IjMzOTdkZTAwLTlmY2MtNDM3MC05MTNhLTc2N2Y5M2MzN2FjZiIsInJvbGUiOiJhZG1pbiIsInNlc3Npb25JZCI6ImZkYjdhNzdmLWZkOWMtNDU4ZS1hYTkzLTQ2ODllZjE5OWQwNiIsImlhdCI6MTc2MDUwNDQ0OSwiZXhwIjoxNzYwNTA1MzQ5fQ.lLXFhh4X9ixuVBsyFZWrsv_Vap7JjLGja3hEke5bkHg"
+}
+
+Respuesta esperada:
+{
+  "message": "Microservice created successfully",
+  "routeName": "adder_csharp",
+  "port": 5037,
+  "url": "http://localhost:5037"
+}
