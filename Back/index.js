@@ -62,6 +62,19 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+app.post("/proxy/update", async (req, res, next) => {
+  try {
+    const { accessToken } = req.body;
+    const routes = await updateProxyRoutes(accessToken);
+    updateRoutes;
+
+    res.status(200).json(routes);
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+});
+
 app.post("/signup", async (req, res) => {
   const userData = req.body;
 
@@ -120,7 +133,7 @@ app.post("/logout", async (req, res) => {
   }
 });
 
-app.get("/verifyToken", async (req, res) => {
+app.get("/verifyToken", async (req, res, next) => {
   const { token } = req.query;
 
   try {
@@ -129,10 +142,7 @@ app.get("/verifyToken", async (req, res) => {
     res.status(200).json({ message: response?.data });
   } catch (err) {
     console.error(err);
-    const status = err.status || 500;
-    res
-      .status(status)
-      .json({ error: err.message, status, statusText: err.statusText });
+    next(err);
   }
 });
 
@@ -161,7 +171,7 @@ app.post("/db/read/:tableName", async (req, res, next) => {
   const tableParams = {
     tableName,
     ...params,
-  };  
+  };
 
   try {
     await verifyToken(accessToken);
@@ -204,7 +214,7 @@ app.post("/db/insert", async (req, res, next) => {
   try {
     await verifyToken(accessToken);
     const response = await insert(tableName, records, accessToken);
-    await updateProxyRoutes();
+    await updateProxyRoutes(accessToken);
 
     res
       .status(200)
@@ -225,7 +235,7 @@ app.post("/db/update", async (req, res, next) => {
       .json({ message: "Update successfull", data: response?.data });
   } catch (err) {
     console.error(err);
-    next(err)
+    next(err);
   }
 });
 
@@ -235,7 +245,7 @@ app.post("/db/delete", async (req, res, next) => {
   try {
     await verifyToken(accessToken);
     const response = await deleteFromTable(data, accessToken);
-        await updateProxyRoutes();
+    await updateProxyRoutes();
 
     res
       .status(200)
@@ -247,8 +257,6 @@ app.post("/db/delete", async (req, res, next) => {
 });
 
 app.post("/deploy", async (req, res, next) => {
-  // const { msData } = req.body;
-  // console.log([msData]);
   try {
     const { msData, accessToken } = req.body;
     if (!msData.routeName || !msData.code || !msData.language)
@@ -256,7 +264,13 @@ app.post("/deploy", async (req, res, next) => {
         .status(400)
         .json({ error: "Fields: name, code and language are required" });
     await verifyToken(accessToken);
-    verifyIfExist(msData.routeName);
+
+    if (verifyIfExist(msData.routeName)) {
+      res
+        .status(400)
+        .json({ error: "Bad request", message: "Microservice already exists" });
+    }
+
     const serviceInfo = await createContainer(
       msData.routeName,
       msData.code,
@@ -274,6 +288,7 @@ app.post("/deploy", async (req, res, next) => {
         accessToken,
       }),
     });
+
     await updateProxyRoutes(accessToken);
     updateRoutes();
     res.json({
@@ -282,10 +297,8 @@ app.post("/deploy", async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    if (error.message !== "Microservice already exists") {
-      const { msData } = req.body;
-      deleteContainer(msData.name);
-    }
+    const { msData } = req.body;
+    deleteContainer(msData.name);
     next(error);
   }
 });
@@ -319,6 +332,47 @@ app.post("/ms/delete/:msName", async (req, res, next) => {
     res
       .status(200)
       .json({ message: `Microservice ${msName} deleted successfully` });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+});
+
+app.post("/ms/update", async (req, res, next) => {
+  try {
+    let { data, accessToken } = req.body;
+
+    await verifyToken(accessToken);
+    if (!verifyIfExist(data.idValue)) {
+      return res.status(400).json({
+        error: "Bad request",
+        message: `microservice ${data.idValue} was not found`,
+      });
+    }
+
+    await deleteContainer(data.idValue);
+    const newContainer = await createContainer(
+      data.updates.routeName,
+      data.updates.code,
+      data.updates.language
+    );
+    data.url = newContainer.url;
+
+    await fetch("http://localhost:3000/db/update", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data,
+        accessToken,
+      }),
+    });
+
+    await updateProxyRoutes(accessToken);
+    updateRoutes();
+
+    res.status(200).json({ message: "Microservice updated succesfully", data });
   } catch (err) {
     console.log(err);
     next(err);
