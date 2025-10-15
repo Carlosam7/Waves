@@ -8,15 +8,16 @@ import { useNavigate } from 'react-router-dom';
 import { createService } from '../../hooks/createService';
 
 export const AddMicroservice = () => {
+    
     // console.log(localStorage.getItem('accessToken'))
     const dialogEdit: React.RefObject<HTMLDialogElement | null> = useRef<HTMLDialogElement>(null);
     const openDialog = () => {
         dialogEdit.current?.showModal();
     };
-    console.log('TOKEN: ', localStorage.getItem('accessToken'))
+    // console.log('TOKEN: ', localStorage.getItem('accessToken'))
 
     const navigate = useNavigate();
-    const [ data, setData ] = useState <Omit<Microservice, 'createdAt' | 'updatedAt'>> ({routeName: '', url: '', status: 'Active', description: '', language: 'Python', endPoints: [], code: ''})
+    const [ data, setData ] = useState <Omit<Microservice, 'createdAt' | 'updatedAt'>> ({_id: '', routeName: '', url: '', status: 'Active', description: '', language: 'Python', endPoints: [], code: ''})
     const [ activeFunction, setActiveFunction ] = useState(false)
 
     

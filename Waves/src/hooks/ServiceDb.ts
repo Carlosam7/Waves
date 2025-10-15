@@ -1,4 +1,4 @@
-import type { Microservice, MicroserviceToSend } from "../lib/types";
+import type { EndpointToSend, Microservice, MicroserviceToSend } from "../lib/types";
 const MICROSERVICES_KEY = 'microservices';
 
 export const getDataTable = async (nameTable:string) => {
@@ -48,9 +48,9 @@ export const getDataTable = async (nameTable:string) => {
 
 
 export const microservice = {
-    getAll: async(): Promise<{ success: boolean, data: any | null, error: any }> => {
+    getAll: async(): Promise<{ success: boolean, data: Microservice[] | [], error: any }> => {
         let data: any;
-        if (typeof window === 'undefined') return {success: false, data: null, error: 'Window undefined'};
+        if (typeof window === 'undefined') return {success: false, data: [], error: 'Window undefined'};
         localStorage.removeItem(MICROSERVICES_KEY)
         // data = localStorage.getItem(MICROSERVICES_KEY);
         // if (data) {
@@ -125,12 +125,12 @@ export const microservice = {
                 return {success: false, data: null, error: reason.reason}
             }
             
-            const services = await microservice.getAll()
-            if (services.success){
-                // console.log('Creando microservicio :)');
-                const updated = [...services.data as Microservice[], newService]
-                localStorage.setItem(MICROSERVICES_KEY, JSON.stringify(updated));
-            }
+            // const services = await microservice.getAll()
+            // if (services.success){
+            //     // console.log('Creando microservicio :)');
+            //     const updated = [...services.data as Microservice[], newService]
+            //     localStorage.setItem(MICROSERVICES_KEY, JSON.stringify(updated));
+            // }
             return {success: true, data: result, error: null}
         }catch (error:any) {
             console.error('Error creating microservice: ', error);
@@ -161,7 +161,6 @@ export const microservice = {
                     accessToken:    localStorage.getItem('accessToken'),
                 })
             });
-
             const result = await response.json()
             console.log('ESTE ES EL RESULTADO: ', result)
             if (!response.ok) {
@@ -173,17 +172,17 @@ export const microservice = {
             }
             // console.log('Esto es longitud: ', result.data.inserted.length)
             // console.log('ESTA ES LA RAZÓN: ', result.data.skipped[0])
-            if (result.data.inserted.length === 0){
-                const reason = result.data.skipped[0]
-                return {success: false, data: null, error: reason.reason}
-            }
+            // if (result.data.inserted.length === 0){
+            //     const reason = result.data.skipped[0]
+            //     return {success: false, data: null, error: reason.reason}
+            // }
             
-            const services = await microservice.getAll()
-            if (services.success){
-                // console.log('Creando microservicio :)');
-                const updated = [...services.data as Microservice[], newService]
-                localStorage.setItem(MICROSERVICES_KEY, JSON.stringify(updated));
-            }
+            // const services = await microservice.getAll()
+            // if (services.success){
+            //     // console.log('Creando microservicio :)');
+            //     const updated = [...services.data as Microservice[], newService]
+            //     localStorage.setItem(MICROSERVICES_KEY, JSON.stringify(updated));
+            // }
             return {success: true, data: result, error: null}
         }catch (error:any) {
             console.error('Error creating microservice: ', error);
@@ -191,25 +190,83 @@ export const microservice = {
         }
     },
 
-    delete: (nameMicroservice: string) => {
+    delete: async (nameMicroservice: string) => {
         if (!nameMicroservice) {
-            return { success: false, data: null, error: 'The Microservice does not exist'
-            }
+            console.error('The Microservice does not exist');
+            return false;
         }
-
         try {
-            // const response = fetch(`http://localhost:3000/${nameMicroservice}`, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: {
-            //         accessToken: localStorage.getItem('accessToken')
-            //     }
-            // })
+            const responseDelete = await fetch(`http://localhost:3000/ms/delete/${nameMicroservice}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({accessToken: localStorage.getItem('accessToken')}
+                )
+            });
 
-        } catch (error) {
-
+            const result = await responseDelete.json()
+            if (!responseDelete.ok) {
+                console.error('Ups, something went wrong. We were enabled to delete the microservice: ', result.message);
+                return false;
+            }
+            // await microservice.getAll();
+           // console.log('ESTE ES EL NOMBRE QUE QUIERO ELIMINAD: ', nameMicroservice)
+            console.warn('The microservice has been removed.')
+            return true;
+        }catch (error) {
+            console.error('Error deleting microservice: ', error)
+            return false
+        } 
+    },
+    update: async (data: any, nameMicroservice: string): Promise<{success: boolean, message: string}> => {
+        data.updatedAt = new Date
+        console.log('ESTOS SON LOS DATOS QUE SE VAN A CONSULTAR: ', data)
+        if (!data) {
+            return {success: false, message: 'No data provider'}
+        }
+        try {
+            const response = await fetch('http://localhost:3000/db/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    data: {
+                            tableName: 'microservice',
+                            idColumn: 'routeName',
+                            idValue: nameMicroservice,
+                            updates: {routeName: data.routeName, 
+                                        url: data.url, 
+                                        status: data.status, 
+                                        description: data.description, 
+                                        language: data.language, 
+                                        endPoints: {"/": "GET", "/saludo": "GET"}, 
+                                        code: data.code
+                                    }
+                    },
+                    accessToken: localStorage.getItem('accessToken')
+                })
+            });
+            
+            const result = await response.json();
+            if (!response.ok) {
+                return {    
+                        success: false, 
+                        message: `Ups, something went wrong. We were enabled to edit the microservice: ${result.message}`
+                        }
+            }
+            console.log('DATOS ENVIADOS EN EL UPDATE: ', result.data)
+            return {
+                    success: true, 
+                    message: `Data successfully updated. ${result.message}`
+                    }
+        }catch (error) {
+            console.error('Error updating microservice: ', error);
+            return {
+                    success: false,
+                    message: `Ups, error updating microservice: ${error}`
+                    }
         }
     }
 };

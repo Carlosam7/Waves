@@ -3,19 +3,23 @@ import type { EndpointToSend, Microservice, MicroserviceToSend } from "../lib/ty
 const parseData = {
     dataMicroservice: (data: Omit<Microservice, 'createdAt' | 'updatedAt'>): Omit<MicroserviceToSend, 'createdAt' | 'updatedAt'> => {
         const points: any = data.endPoints;
-        let dictEndpoints: EndpointToSend = {}
+        let dictEndpoints: any = {}
         if(points.length > 0){
             for (const item of points){
                 dictEndpoints[item.path] = item.method
             }
         }
+        // dictEndpoints = JSON.parse(dictEndpoints)
+
+        console.log('Este es el JSON parseado',dictEndpoints)
+        const name = data.routeName.toLowerCase().replace(/\s+/g, "");
         return {
-            routeName: data.routeName,
+            routeName: name,
             url: data.url,
             status: data.status,
             description: data.description,
             language: data.language,
-            endpoints: dictEndpoints,
+            endPoints: dictEndpoints,
             code: data.code
         }
 

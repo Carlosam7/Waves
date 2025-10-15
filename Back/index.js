@@ -215,23 +215,17 @@ app.post("/db/insert", async (req, res, next) => {
   }
 });
 
-app.post("/db/update", async (req, res) => {
-  const { data, accessToken } = req.body;
-
+app.post("/db/update", async (req, res, next) => {
   try {
+    const { data, accessToken } = req.body;
     const response = await update(data, accessToken);
 
     res
       .status(200)
       .json({ message: "Update successfull", data: response?.data });
   } catch (err) {
-    console.error("Error:", err.response?.data || err.message);
-
-    res.status(err.response?.status || 500).json({
-      message: err.message,
-      status: err.response?.status,
-      data: err.response?.data || null,
-    });
+    console.error(err);
+    next(err)
   }
 });
 

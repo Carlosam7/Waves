@@ -2,23 +2,23 @@ import type { Microservice } from "../lib/types";
 import parseData from "./parseData";
 import { microservice } from "./ServiceDb";
 
-export const createService = async (data: Omit<Microservice, 'createdAt' | 'updatedAt'>) => {
+export const updateService = async (data: Microservice, name: string) => {
     const dataParse = parseData.dataMicroservice(data);
     data.code = parseData.codeMicroservice(data.code)
     // console.log('Esto es lo que envio: ', dataParse)
-    console.log(data.code)
+    console.log('Este es el Endpoint parseado ', dataParse.endPoints)
+    console.log('Este es el microservicio', dataParse)
     try {
-        console.log('ESTO ES LO QUE ENVÍO: ', dataParse)
-        const response = await microservice.deploy(dataParse);
-        // console.log('PASÉ ESTA PRUEBA??')
+        const response  = await microservice.update(dataParse, name);
+        console.log('ESTA ES LA RESPUESTA', response)
         if (!response.success){
-            alert(response.error)
+            alert(response.message)
         }else {
-            alert('Microservice created');
+            alert('Microservice successfully updated.');
             //navigate('/app/microservice', { replace: true });
             //setTimeout(() => window.location.reload(), 100)
         }
     }catch (error) {
-        console.error('Creation failed. ', error)
+        console.error('Updating failed. ', error)
     }
 }

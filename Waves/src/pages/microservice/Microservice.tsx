@@ -11,7 +11,6 @@ import type { Microservice } from '../../lib/types';
 export function Microservice() {
     const [services, setServices] = useState<Microservice[]>([]);
     // const dialogEdit: React.RefObject<HTMLDialogElement | null> = useRef<HTMLDialogElement>(null);
-
     useEffect(() => {
         //storageService.seed();
         loadServices();
@@ -28,29 +27,30 @@ export function Microservice() {
             // console.log('Esto es services. ', services)
         }
     }
-    // console.log('tamaño: ', services.length)
+
+    // const editMicroservice = (service: Omit<Microservice, 'createdAt' | 'updatedAt'>) => {
+    //     microservice.update(service);
+    // }
 
     return (
-            <main className={`${styles.container}`}>
-                <AddMicroservice />
+        <main className={`${styles.container}`}>
+            <AddMicroservice />
 
-
-                <div className={stylesM.contentCards}>
-                    { services.length === 0 ? (
-                        <p>There are not microservices</p>
-                    ) : (
-                        services.map ((service, index) => (
-                            <MicroserviceCard
-                                key={index}
-                                service = {service}
-                                onEdit={()=>{}}
-                                onDelete={()=>{}}
-                                onViewEndpoints={()=>{}}
-                            />
-                        ))
-                    )}
-                </div>
-                
-            </main>
+            <div className={stylesM.contentCards}>
+                { services.length === 0 ? (
+                    <p>There are not microservices</p>
+                ) : (
+                    services.map ((service: Microservice, index) => (
+                        <MicroserviceCard
+                            key={index}
+                            service = {service}
+                            // onEdit={microservice.update}
+                            onDelete={microservice.delete}
+                            onViewEndpoints={()=>{}}
+                        />
+                    ))
+                )}
+            </div>
+        </main>
     )
 }

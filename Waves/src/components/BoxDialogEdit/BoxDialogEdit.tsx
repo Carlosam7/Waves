@@ -1,25 +1,49 @@
-import styles from './boxDialog.module.css'
-import type { BoxDialogProp, LenguageType, MicroserviceStatus } from '../../lib/types';
+import styles from '../BoxDialog/boxDialog.module.css'
+import type { BoxDialogEditProp, LenguageType, Microservice, MicroserviceStatus } from '../../lib/types';
 import { useTheme } from '../../context/ThemeContext';
-import { useState } from 'react';
-import { EndPointForm } from '../EndPointForm/EndPointForm';
+import { useState, useRef, useEffect } from 'react';
+// import { EndPointForm } from '../EndPointForm/EndPointForm';
+import { EndPointFormEdit } from '../EndPointForm/EndPointFormEdit';
 
 
-export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveFunction }: BoxDialogProp) => {
+export const BoxDialogEdit = ({ dialogRef, data, setData, activeFunction, setActiveFunction }: BoxDialogEditProp) => {
+    // console.log('Estos son los datos: ', data)
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const normalizeEndpoints = (endPoints: any) => {
+        if (Array.isArray(endPoints)) return endPoints;
+        if (typeof endPoints === "object" && endPoints !== null) {
+            return Object.entries(endPoints).map(([path, method]) => ({
+                path,
+                method
+            }));
+        }
+        return [];
+    };
+
+    // setData({...data, endPoints: normalizeEndpoints(data.endPoints)})
+
+
+
+    const [service, setService] = useState <Microservice>({...data, endPoints: normalizeEndpoints(data.endPoints)}) 
     const colorState = {
         purple: styles.active,
         gray: styles.inactive,
         red: styles.error
     }
+    useEffect(()=> {
+        setData(service)
+
+    }, [service])
+  
+    // console.log('AQUI ESTÁ LA DATA PARA EDITAR: ', service)
     const [selectedValue, setSelectedValue] = useState('Active')
     // const [color, setColor] = useState('#7376FF')
     const [claseColor, setClaseColor] = useState(colorState.purple)
     const [nameFile, setNameFile] = useState('')
-    
 
     const handleSelectChange = (event: any) => {
         const value = event.target.value;
-        // console.log(value)
+        console.log('TOMADLO', value)
         setSelectedValue(value)
         
         value === 'Active'? setClaseColor(colorState.purple) ://('#7376FF') :
@@ -30,69 +54,79 @@ export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveF
         dialogRef.current?.close();
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        // console.log('handleFileChange fired', e);
+        const input = e.currentTarget;
+        const file = input.files?.[0];
+        if (!file) {
+            console.log('No file selected');
+            return;
+        }
         const fileName = file.name;
-        const extension = fileName.split('.').pop()
-        const language = extension === 'js' ? 'JS' : extension === 'py' ? 'Python' : 'C#';
-        setNameFile(e.target.value)
+        const extension = fileName.split('.').pop()?.toLowerCase();
+        const language = (extension === 'js' ? 'JS' : extension === 'py' ? 'Python' : 'C#') as LenguageType;
+        setNameFile(fileName);
+
         const reader = new FileReader();
         reader.onload = (event) => {
             const code = event.target?.result as string;
-            // console.log('SKNSKFNLNFNKSDNFGSK SIIIIIIIII', code)
-            data.language = language
-
-            setData({ ...data, code }); // Guardas el código en tu estado "data"
-            // console.log('ESTE ES EL CÓDIGOOO', code)
+            console.log('file content length:', code?.length);
+            // actualizar ambos estados usando la forma funcional (evita cierres)
+            setService(prev => ({ ...prev, code, language }));
+            setData(prev => ({ ...prev, code, language }));
+            // limpiar input para permitir seleccionar el mismo archivo después
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        };
+        reader.onerror = (err) => {
+            console.error('FileReader error', err);
         };
         reader.readAsText(file);
     };
 
     const activeFunctionCreateMicroservice = () => {
-        if(!data.routeName || !data.description || !data.endPoints) {
+        if(!service.routeName || !service.description || !service.endPoints || !service.code) {
             alert("Por favor, completa todos los campos")
             return
         }
-        if (!activeFunction){
+            if (!activeFunction){
             setActiveFunction(true);
         }
     }
     return (
+        
         <dialog ref={dialogRef} className={styles.dialog}>
             <div className={styles.dialogContain}>
                 <header>
-                    <h2>Create a Microservice</h2>
+                    <h2>Edit Microservice</h2>
                     <button className={styles.btnCloseDialog} onClick={closeDialog}>  
                         <img src={`${useTheme().theme==='dark' ? '/icons/icon-close.png' : '/icons/icon-close-black.png'}`} alt="close icon" width={20}/>
                     </button>
                 </header>
                 <div>
-                    <p>Complete microservice information and his EndPoints</p>
+                    <p>Edit microservice information and his EndPoints</p>
                 </div>
 
                 <form action="" className={styles.formDialog}>
                     <div className={`${styles.inputDialog} ${styles.inputForm}`}>
                         <label htmlFor="name">Name</label>
                         <input required id='name' name='name' type="text" autoComplete='false' placeholder='User Authentication Service' 
-                            value={data.routeName} 
-                            onChange={(e) => {setData(prev => ({...prev, routeName:e.target.value}))}}
+                            value={service.routeName} 
+                            onChange={(e) => {setService(prev => ({...prev, routeName:e.target.value}))}}
                         />
                     </div>
                     <div className={`${styles.inputDescriptionDialog} ${styles.inputForm}`}>
                         <label htmlFor="Description">Description</label>
                         <textarea required id='Description' name='description' placeholder='Describe microservice functionality'
-                            value={data.description} 
-                            onChange={(e) => {setData(prev => ({...prev, description:e.target.value}))}}
+                            value={service.description} 
+                            onChange={(e) => {setService(prev => ({...prev, description:e.target.value}))}}
                         />
                     </div>
                     <div className={styles.containerSelectBox}>
                         <div className={`${styles.inputForm}`}>
                             <label htmlFor="Lenguage">Lenguage</label>
                             <select disabled={true} required name="lenguage" id="Lenguage" className={styles.selectLenguage} 
-                                value={data.language} 
-                                onChange={(e) => {setData(prev => ({...prev, lenguage:e.target.value as LenguageType}))}}
+                                value={service.language} 
+                                onChange={(e) => {setService(prev => ({...prev, lenguage:e.target.value as LenguageType}))}}
                             >
                                 <option value="Python">Python</option>
                                 <option value="JS">JS</option>
@@ -101,7 +135,7 @@ export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveF
                         </div>
                         <div className={`${styles.inputForm}`}>
                             <label htmlFor="State">State</label>
-                            <select required onChange={(e) => {handleSelectChange(e); setData(prev => ({...prev, status: e.target.value as MicroserviceStatus}))}} 
+                            <select required onChange={(e) => {handleSelectChange(e); setService(prev => ({...prev, status: e.target.value as MicroserviceStatus}))}} 
                                 value={selectedValue} name="status" id="State"  className={`${claseColor} ${styles.selectState}`}>
                                 <option id='Active' value="Active">Active</option>
                                 <option id='Inactive' value="Inactive">Inactive</option>
@@ -113,22 +147,21 @@ export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveF
                         Aquí va el componente de Tags
                     </div>
                     <div>
-                        <EndPointForm data={data} setData={setData}/>
+                        <EndPointFormEdit data={service} setData={setService}/>
                     </div>
                     <div className={styles.containerCode}>
-                        <label htmlFor="submitCode">Subir codigo</label>
-                        <input id='submitCode' type="file" accept='.py, .js, .cs'
-                            onChange={(e) => handleFileChange(e)}
+                        <label htmlFor="codeEdit">Subir codigo</label>
+                        <input key={service.routeName} id='codeEdit' type="file" accept='.py, .js, .cs'
+                            onChange={handleFileChange}
                         />
                         <p>{nameFile}</p>
                     </div>
-
                     <div className={styles.containerButton}>
                         <button id='BtnCancel' className={styles.btnCancel}>Cancel</button>
-                        <button type='button' onClick={activeFunctionCreateMicroservice} id='BtnCreate' className={styles.btnCreate}>Create</button>
+                        <button type='button' onClick={activeFunctionCreateMicroservice} id='BtnCreate' className={styles.btnCreate}>Edit</button>
                     </div>
                 </form>
             </div>
         </dialog>
-)
+    )
 }

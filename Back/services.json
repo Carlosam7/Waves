@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "_id": "XbRUcHFzAnpl",
+    "routeName": "holamundo",
+    "url": "http://localhost:5001",
+    "status": "Active",
+    "description": "This is a small example of a microservice that returns a 'Hello world'.",
+    "language": "Python",
+    "endPoints": {
+      "/": "GET",
+      "/saludo": "GET"
+    },
+    "code": "from flask import Flask, request, jsonify\r\n\r\n# Crear la aplicación Flask\r\napp = Flask(__name__)\r\n\r\n@app.route(\"/\")\r\ndef inicio():\r\n    return jsonify({\"mensaje\": \"Bienvenido al microservicio de suma con Flask 🚀\"})\r\n\r\n@app.route(\"/sumar\", methods=[\"POST\"])\r\ndef sumar():\r\n    datos = request.get_json()\r\n\r\n    # Validar que se envíen los campos 'a' y 'b'\r\n    if not datos or \"a\" not in datos or \"b\" not in datos:\r\n        return jsonify({\"error\": \"Debes enviar los valores 'a' y 'b' en formato JSON\"}), 400\r\n\r\n    try:\r\n        a = float(datos[\"a\"])\r\n        b = float(datos[\"b\"])\r\n        resultado = a + b\r\n        return jsonify({\"resultado\": resultado})\r\n    except ValueError:\r\n        return jsonify({\"error\": \"Los valores deben ser numéricos\"}), 400\r\n\r\n# Punto de entrada del servidor Flask\r\nif __name__ == \"__main__\":\r\n    app.run(host=\"0.0.0.0\", port=5000)",
+    "createdAt": "2025-10-15",
+    "updatedAt": "2025-10-15"
+  }
+]

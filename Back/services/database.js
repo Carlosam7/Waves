@@ -67,7 +67,7 @@ export const deleteFromTable = (data, accessToken) => {
     },
     data: {
       tableName: data?.tableName,
-      idColumn: data?.idColumn || "_id",
+      idColumn: data?.idColumn || "routeName",
       idValue: data?.idValue,
     },
   });

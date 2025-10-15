@@ -2,23 +2,44 @@ import { useTheme } from "../../context/ThemeContext";
 import  styles  from "./microserviceCard.module.css"
 
 import type { Microservice } from "../../lib/types";
+import { useEffect, useRef, useState } from "react";
+import { BoxDialogEdit } from "../BoxDialogEdit/BoxDialogEdit";
+import { updateService } from "../../hooks/updateService";
+
 
 interface MicroserviceCardProps {
     service: Microservice
-    onEdit: (service: Microservice) => void
-    onDelete: (service: Microservice) => void
+    // onEdit: (service: Microservice) => void
+    onDelete: (routhName: string) => void
     onViewEndpoints: (service: Microservice) => void
 }
 
-export function MicroserviceCard ({ service, onEdit, onDelete, onViewEndpoints } : MicroserviceCardProps) {
+export function MicroserviceCard ({ service, onDelete, onViewEndpoints } : MicroserviceCardProps) {
+    const dialogEdit: React.RefObject<HTMLDialogElement | null> = useRef<HTMLDialogElement>(null);
     const statusColor = {
         Active: 'linear-gradient(90deg, #5B5EE2 0%, #7376FF 100%)',
         Inactive: 'linear-gradient(90deg, #202020 0%, #505050 100%)',
         Error: 'linear-gradient(90deg, #FF5B5B 0%, #FF7373 100%)'
 
     }
-    // console.log('These are the endpoints: ', service.endpoints)
-    // console.log('This is the code: ', service.code)
+
+    const [infoService, setInfoService] = useState(service);
+    const [activeFunction, setActiveFunction] = useState(false);
+    const openDialog = () => {
+        dialogEdit.current?.showModal();
+    };
+
+    
+        console.log('DATOS ACTUALIZADOS', infoService)
+    
+
+    useEffect(() => {
+        if (activeFunction){
+            updateService(infoService, service.routeName)
+            dialogEdit.current?.close();dialogEdit.current?.close();
+            setActiveFunction(false)
+        }
+    },[activeFunction])
 
 
     const iconLenguage = {
@@ -64,22 +85,28 @@ export function MicroserviceCard ({ service, onEdit, onDelete, onViewEndpoints }
                 <section className={`${styles.footCard}`}>
                     <div className={styles.pathService}>
                         <img src={`${useTheme().theme==='dark' ? '/icons/icon-url.png' : '/icons/icon-url-black.png'}`} alt="icono url" width={20} style={{userSelect: "none"}}/>
-                        <span>{ service.url }</span>
+                        <span>http://localhost:3000/{ service.routeName }</span>
                     </div>
 
                     <div className={styles.btnsCard}>
                         <button className={`${styles.btnViewEndpoint}`} onClick={() => onViewEndpoints(service)}>
                             { Object.keys(service.endPoints).length } Endpoints
                         </button>
-                        <button className={styles.btnEdit} onClick={() => onEdit(service)}>
+                        <button className={styles.btnEdit} onClick={openDialog}>
                             <img src="/icons/icon-edit.png" alt="icono botón editar" width={20}/>
                         </button>
-                        <button className={styles.btnDelete} onClick={() => onDelete(service)}>
+                        <button className={styles.btnDelete} onClick={() => onDelete(service.routeName)}>
                             <img src="/icons/icon-delete.png" alt="icono eliminar" width={20}/>
                         </button>
                     </div>
                 </section>
             </main>
+            <BoxDialogEdit  dialogRef={dialogEdit} 
+                            data={infoService} 
+                            setData={setInfoService} 
+                            activeFunction={activeFunction} 
+                            setActiveFunction={setActiveFunction} 
+            />
         </div>
     )
 }

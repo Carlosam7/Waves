@@ -11,7 +11,13 @@ export type EndPointFormProps = {
     setData: React.Dispatch<React.SetStateAction<Omit<Microservice, 'createdAt' | 'updatedAt'>>>;
 }
 
+export type EndPointFormPropsEdit = {
+    data: Microservice;
+    setData: React.Dispatch<React.SetStateAction<Microservice>>;
+}
+
 export interface Microservice {
+    _id: string;
     routeName: string;
     url: string;
     status: MicroserviceStatus;
@@ -34,7 +40,7 @@ export interface MicroserviceToSend {
     status: MicroserviceStatus;
     description: string;
     language: LenguageType;    
-    endpoints: EndpointToSend;
+    endPoints: EndpointToSend;
     code: string;
     createdAt: Date;
     updatedAt: Date;
@@ -51,6 +57,14 @@ export interface BoxDialogProp {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
   data: Omit<Microservice, 'createdAt' | 'updatedAt'>;
   setData: React.Dispatch<React.SetStateAction<Omit<Microservice, 'createdAt' | 'updatedAt'>>>;
+  activeFunction: boolean
+  setActiveFunction: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface BoxDialogEditProp {
+  dialogRef: React.RefObject<HTMLDialogElement | null>;
+  data: Microservice;
+  setData: React.Dispatch<React.SetStateAction<Microservice>>;
   activeFunction: boolean
   setActiveFunction: React.Dispatch<React.SetStateAction<boolean>>;
 }
