@@ -105,6 +105,22 @@ Seguridad y limpieza:
 - Los tokens se validan en varios endpoints (ej. `/db/*`, `/deploy`) mediante `verifyToken`.
 - Cuando se produce un error durante el deploy, el backend intenta eliminar el contenedor y la imagen creada.
 
+## Tabla Microservice
+
+- Microservice es la tabla modelo en la que se basa el proyecto. Esta conformada por las siguientes columnas:
+
+<_id, varchar>
+<routeName, varchar>
+<url, varchar>
+<status, varchar>
+<description, varchar>
+<language, varchar>
+<endPoints, Json>
+<code, varchar>
+<createdAt, date>
+<updatedAt, date>
+
+
 ## Frontend (Waves) — detalles importantes
 
 Stack: React + TypeScript + Vite.
