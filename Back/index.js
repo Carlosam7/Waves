@@ -372,7 +372,7 @@ app.post("/ms/update", async (req, res, next) => {
     await updateProxyRoutes(accessToken);
     updateRoutes();
 
-    // res.status(200).json({ message: "Microservice updated succesfully", data });
+    res.status(200).json({ message: "Microservice updated succesfully", data });
   } catch (err) {
     console.log(err);
     next(err);
