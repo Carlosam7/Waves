@@ -179,7 +179,7 @@ Proyecto original y estructura basada en el repositorio del orquestador de micro
 Si quieres que adapte el README con más detalles (ejemplos de `.env`, comandos Docker exactos, o un diagrama PNG exportado), dime qué formato prefieres y lo agrego.
 
 
-## Ejemplos de solicitudes y respuestas esperadas
+## Ejemplos de solicitudes y respuestas esperadas (El puerto varia)
 
 Ejemplo 1 - Deploy de microservicio en Python (Flask)
 
