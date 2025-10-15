@@ -253,7 +253,7 @@ Ejemplo 3 — Deploy de microservicio en Csharp
     },
     "code": "using Microsoft.AspNetCore.Builder;\nusing Microsoft.AspNetCore.Http;\nusing Microsoft.Extensions.Hosting;\n\nvar builder = WebApplication.CreateBuilder(args);\nvar app = builder.Build();\n\napp.MapGet("/", (int a, int b) => Results.Json(new { resultado = a + b }));\n\napp.Run("http://0.0.0.0:5000/");"
   },
-  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5YzUwMmRlZi0yODRlLTQ2MjMtYmRiZi05NjgyMzMyYjliNjMiLCJlbWFpbCI6ImVkYWR1bEB1bmlub3J0ZS5lZHUuY28iLCJkYk5hbWUiOiJvbGFfYTM0M2YzMDczNCIsInJvbGVJZCI6IjMzOTdkZTAwLTlmY2MtNDM3MC05MTNhLTc2N2Y5M2MzN2FjZiIsInJvbGUiOiJhZG1pbiIsInNlc3Npb25JZCI6ImZkYjdhNzdmLWZkOWMtNDU4ZS1hYTkzLTQ2ODllZjE5OWQwNiIsImlhdCI6MTc2MDUwNDQ0OSwiZXhwIjoxNzYwNTA1MzQ5fQ.lLXFhh4X9ixuVBsyFZWrsv_Vap7JjLGja3hEke5bkHg"
+  "accessToken": "<ACCESS_TOKEN_VALIDO>"
 }
 
 Respuesta esperada:
