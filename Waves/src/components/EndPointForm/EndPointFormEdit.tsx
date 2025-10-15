@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Endpoint, EndPointFormProps, EndPointFormPropsEdit } from '../../lib/types'
+import type { Endpoint, EndPointFormPropsEdit } from '../../lib/types'
 import styles from './endPointForm.module.css'
 
 export const EndPointFormEdit = ({ data, setData }: EndPointFormPropsEdit) => {

@@ -15,8 +15,6 @@ export const createService = async (data: Omit<Microservice, 'createdAt' | 'upda
             alert(response.error)
         }else {
             alert('Microservice created');
-            //navigate('/app/microservice', { replace: true });
-            //setTimeout(() => window.location.reload(), 100)
         }
     }catch (error) {
         console.error('Creation failed. ', error)

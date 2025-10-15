@@ -2,12 +2,9 @@ import styles from '../BoxDialog/boxDialog.module.css'
 import type { BoxDialogEditProp, LenguageType, Microservice, MicroserviceStatus } from '../../lib/types';
 import { useTheme } from '../../context/ThemeContext';
 import { useState, useRef, useEffect } from 'react';
-// import { EndPointForm } from '../EndPointForm/EndPointForm';
 import { EndPointFormEdit } from '../EndPointForm/EndPointFormEdit';
 
-
 export const BoxDialogEdit = ({ dialogRef, data, setData, activeFunction, setActiveFunction }: BoxDialogEditProp) => {
-    // console.log('Estos son los datos: ', data)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const normalizeEndpoints = (endPoints: any) => {
         if (Array.isArray(endPoints)) return endPoints;
@@ -20,10 +17,6 @@ export const BoxDialogEdit = ({ dialogRef, data, setData, activeFunction, setAct
         return [];
     };
 
-    // setData({...data, endPoints: normalizeEndpoints(data.endPoints)})
-
-
-
     const [service, setService] = useState <Microservice>({...data, endPoints: normalizeEndpoints(data.endPoints)}) 
     const colorState = {
         purple: styles.active,
@@ -35,16 +28,13 @@ export const BoxDialogEdit = ({ dialogRef, data, setData, activeFunction, setAct
 
     }, [service])
   
-    // console.log('AQUI ESTÁ LA DATA PARA EDITAR: ', service)
-    const [selectedValue, setSelectedValue] = useState('Active')
-    // const [color, setColor] = useState('#7376FF')
     const [claseColor, setClaseColor] = useState(colorState.purple)
     const [nameFile, setNameFile] = useState('')
 
     const handleSelectChange = (event: any) => {
+        setService(prev => ({ ...prev, status:event.target.value }));
         const value = event.target.value;
         console.log('TOMADLO', value)
-        setSelectedValue(value)
         
         value === 'Active'? setClaseColor(colorState.purple) ://('#7376FF') :
         value === 'Inactive' ? setClaseColor(colorState.gray) : setClaseColor(colorState.red)//('#DADADA') : setClaseColor('#FF0040')
@@ -55,7 +45,6 @@ export const BoxDialogEdit = ({ dialogRef, data, setData, activeFunction, setAct
     };
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        // console.log('handleFileChange fired', e);
         const input = e.currentTarget;
         const file = input.files?.[0];
         if (!file) {
@@ -71,10 +60,8 @@ export const BoxDialogEdit = ({ dialogRef, data, setData, activeFunction, setAct
         reader.onload = (event) => {
             const code = event.target?.result as string;
             console.log('file content length:', code?.length);
-            // actualizar ambos estados usando la forma funcional (evita cierres)
             setService(prev => ({ ...prev, code, language }));
             setData(prev => ({ ...prev, code, language }));
-            // limpiar input para permitir seleccionar el mismo archivo después
             if (fileInputRef.current) fileInputRef.current.value = '';
         };
         reader.onerror = (err) => {
@@ -93,7 +80,6 @@ export const BoxDialogEdit = ({ dialogRef, data, setData, activeFunction, setAct
         }
     }
     return (
-        
         <dialog ref={dialogRef} className={styles.dialog}>
             <div className={styles.dialogContain}>
                 <header>
@@ -136,7 +122,7 @@ export const BoxDialogEdit = ({ dialogRef, data, setData, activeFunction, setAct
                         <div className={`${styles.inputForm}`}>
                             <label htmlFor="State">State</label>
                             <select required onChange={(e) => {handleSelectChange(e); setService(prev => ({...prev, status: e.target.value as MicroserviceStatus}))}} 
-                                value={selectedValue} name="status" id="State"  className={`${claseColor} ${styles.selectState}`}>
+                                value={service.status} name="status" id="State"  className={`${claseColor} ${styles.selectState}`}>
                                 <option id='Active' value="Active">Active</option>
                                 <option id='Inactive' value="Inactive">Inactive</option>
                                 <option id='Error' value="Error">Error</option>

@@ -43,6 +43,17 @@
 
 }
 
+.headCard h3{
+    display: -webkit-box;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-right: 2px;
+}
+
 .headCard p{
     display: -webkit-box;
     font-size: 12px;
@@ -82,6 +93,7 @@
 }
 
 .pathService {
+    display: flex;
     align-items: center;
     justify-content: start;
     width: 100%;
@@ -93,6 +105,16 @@
     padding: 0px 10px;
     font-weight: 300;
     font-size: 12px;
+    margin-left: 5px;
+}
+
+.pathService span {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;   
 }
 
 .footCard {

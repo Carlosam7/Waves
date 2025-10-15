@@ -75,14 +75,14 @@ export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveF
                 <form action="" className={styles.formDialog}>
                     <div className={`${styles.inputDialog} ${styles.inputForm}`}>
                         <label htmlFor="name">Name</label>
-                        <input required id='name' name='name' type="text" autoComplete='false' placeholder='User Authentication Service' 
+                        <input id='name' name='name' type="text" autoComplete='false' placeholder='User Authentication Service' 
                             value={data.routeName} 
                             onChange={(e) => {setData(prev => ({...prev, routeName:e.target.value}))}}
                         />
                     </div>
                     <div className={`${styles.inputDescriptionDialog} ${styles.inputForm}`}>
                         <label htmlFor="Description">Description</label>
-                        <textarea required id='Description' name='description' placeholder='Describe microservice functionality'
+                        <textarea id='Description' name='description' placeholder='Describe microservice functionality'
                             value={data.description} 
                             onChange={(e) => {setData(prev => ({...prev, description:e.target.value}))}}
                         />
@@ -90,7 +90,7 @@ export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveF
                     <div className={styles.containerSelectBox}>
                         <div className={`${styles.inputForm}`}>
                             <label htmlFor="Lenguage">Lenguage</label>
-                            <select disabled={true} required name="lenguage" id="Lenguage" className={styles.selectLenguage} 
+                            <select disabled={true} name="lenguage" id="Lenguage" className={styles.selectLenguage} 
                                 value={data.language} 
                                 onChange={(e) => {setData(prev => ({...prev, lenguage:e.target.value as LenguageType}))}}
                             >
@@ -101,7 +101,7 @@ export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveF
                         </div>
                         <div className={`${styles.inputForm}`}>
                             <label htmlFor="State">State</label>
-                            <select required onChange={(e) => {handleSelectChange(e); setData(prev => ({...prev, status: e.target.value as MicroserviceStatus}))}} 
+                            <select onChange={(e) => {handleSelectChange(e); setData(prev => ({...prev, status: e.target.value as MicroserviceStatus}))}} 
                                 value={selectedValue} name="status" id="State"  className={`${claseColor} ${styles.selectState}`}>
                                 <option id='Active' value="Active">Active</option>
                                 <option id='Inactive' value="Inactive">Inactive</option>

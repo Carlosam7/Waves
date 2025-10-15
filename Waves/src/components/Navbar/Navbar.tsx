@@ -3,8 +3,32 @@ import { NavLink } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { BarSetup } from '../atoms/BarSetup/BarSetup';
 import styles from './Navbar.module.css';
+import { useAuth } from '../../context/AuthContext';
+import { useState } from 'react';
 
 export function Navbar() {
+    const [state, setState] = useState(false);
+
+    const handleState = () => {
+        if (state) {
+            setState(false)
+        } else {
+            setState(true)
+        }
+    }
+
+    const boxLogOut = () => {
+        if (state) {
+            return <div className={styles.logOut}>
+                <button onClick={useAuth().logout}>Log out</button>
+            </div>
+        }else {
+            return null
+        }
+    }
+
+    console.log('boton: ', state)
+
     return(
         <>
             <nav className={styles.navbar}>
@@ -21,12 +45,13 @@ export function Navbar() {
                             </a>
                             <section className={styles.userSection}>
                                 <div className={styles.userInfo}>
-                                    <p className={styles.userName}>Carlos Arango</p>
+                                    <p className={styles.userName}>{useAuth().user?.email}</p>
                                     <p className={styles.userState}>Available</p>
                                 </div>
-                                <div className={styles.profileSection}>
+                                <div className={styles.profileSection} onClick={handleState}>
                                     <img className={styles.profilePicture} src="/icons/icon-user-black.png" alt="Profile" />
                                 </div>
+                                {boxLogOut()}
                             </section>
                         </div>
                     </section>

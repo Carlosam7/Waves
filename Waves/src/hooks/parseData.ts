@@ -1,4 +1,4 @@
-import type { EndpointToSend, Microservice, MicroserviceToSend } from "../lib/types";
+import type { Microservice, MicroserviceToSend } from "../lib/types";
 
 const parseData = {
     dataMicroservice: (data: Omit<Microservice, 'createdAt' | 'updatedAt'>): Omit<MicroserviceToSend, 'createdAt' | 'updatedAt'> => {

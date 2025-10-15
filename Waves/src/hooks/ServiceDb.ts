@@ -1,4 +1,4 @@
-import type { EndpointToSend, Microservice, MicroserviceToSend } from "../lib/types";
+import type { Microservice, MicroserviceToSend } from "../lib/types";
 const MICROSERVICES_KEY = 'microservices';
 
 export const getDataTable = async (nameTable:string) => {
@@ -139,6 +139,7 @@ export const microservice = {
     },
 
     deploy: async (dataMicroservice: Omit<MicroserviceToSend, 'createdAt' | 'updatedAt'>) => {
+        console.log('Estos son los datos: ', dataMicroservice)
         if (!dataMicroservice){
             return {succes: false, data:null, error: 'No data provider'}
         }
@@ -170,23 +171,13 @@ export const microservice = {
                     error: result.message || 'Create microservice was failed'
                 }
             }
-            // console.log('Esto es longitud: ', result.data.inserted.length)
-            // console.log('ESTA ES LA RAZÓN: ', result.data.skipped[0])
-            // if (result.data.inserted.length === 0){
-            //     const reason = result.data.skipped[0]
-            //     return {success: false, data: null, error: reason.reason}
-            // }
-            
-            // const services = await microservice.getAll()
-            // if (services.success){
-            //     // console.log('Creando microservicio :)');
-            //     const updated = [...services.data as Microservice[], newService]
-            //     localStorage.setItem(MICROSERVICES_KEY, JSON.stringify(updated));
-            // }
+
             return {success: true, data: result, error: null}
         }catch (error:any) {
             console.error('Error creating microservice: ', error);
             return { success: false, data: null, error: error};
+        }finally {
+            setTimeout(() => window.location.reload(), 100)
         }
     },
 
@@ -216,8 +207,11 @@ export const microservice = {
             return true;
         }catch (error) {
             console.error('Error deleting microservice: ', error)
+            alert(`Error deleting microservice: ${error}`)
             return false
-        } 
+        } finally {
+            setTimeout(() => window.location.reload(), 100)
+        }
     },
     update: async (data: any, nameMicroservice: string): Promise<{success: boolean, message: string}> => {
         data.updatedAt = new Date
@@ -225,8 +219,9 @@ export const microservice = {
         if (!data) {
             return {success: false, message: 'No data provider'}
         }
+        console.log('Se mandó esto: ', data)
         try {
-            const response = await fetch('http://localhost:3000/db/update', {
+            const response = await fetch('http://localhost:3000/ms/update', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -237,12 +232,12 @@ export const microservice = {
                             idColumn: 'routeName',
                             idValue: nameMicroservice,
                             updates: {routeName: data.routeName, 
-                                        url: data.url, 
                                         status: data.status, 
                                         description: data.description, 
                                         language: data.language, 
-                                        endPoints: {"/": "GET", "/saludo": "GET"}, 
-                                        code: data.code
+                                        endPoints: data.endPoints, 
+                                        code: data.code,
+                                        updatedAt: new Date
                                     }
                     },
                     accessToken: localStorage.getItem('accessToken')
@@ -267,6 +262,8 @@ export const microservice = {
                     success: false,
                     message: `Ups, error updating microservice: ${error}`
                     }
+        }finally {
+            // setTimeout(() => window.location.reload(), 100)   
         }
     }
 };

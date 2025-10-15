@@ -9,7 +9,6 @@ import { updateService } from "../../hooks/updateService";
 
 interface MicroserviceCardProps {
     service: Microservice
-    // onEdit: (service: Microservice) => void
     onDelete: (routhName: string) => void
     onViewEndpoints: (service: Microservice) => void
 }
@@ -28,10 +27,6 @@ export function MicroserviceCard ({ service, onDelete, onViewEndpoints } : Micro
     const openDialog = () => {
         dialogEdit.current?.showModal();
     };
-
-    
-        console.log('DATOS ACTUALIZADOS', infoService)
-    
 
     useEffect(() => {
         if (activeFunction){
