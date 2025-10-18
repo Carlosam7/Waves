@@ -69,7 +69,7 @@ export async function createContainer(name, code, language) {
   return {
     routeName: name,
     port,
-    url: `http://localhost:${port}`,
+    url: `http://host.docker.internal:${port}`,
   };
 }
 
