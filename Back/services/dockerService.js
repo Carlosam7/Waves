@@ -77,14 +77,16 @@ export async function deleteContainer(name) {
   const path = `./temp/${name}`;
 
   try {
-    exec(`docker stop ${name}_c`);
-    exec(`docker rm -f ${name}_c`);
-    exec(`docker rmi -f ${name}`);
+    await execPromise(`docker stop ${name}_c`);
+    await execPromise(`docker rm -f ${name}_c`);
+    await execPromise(`docker rmi -f ${name}`);
 
     if (fs.existsSync(path)) {
       await fs.promises.rm(path, { recursive: true, force: true });
     }
+
+    console.log(`🗑️  Container and image ${name} deleted successfully`);
   } catch (err) {
-    console.log(err);
+    console.log(`⚠️ Error deleting container ${name}_c:`, err);
   }
 }
