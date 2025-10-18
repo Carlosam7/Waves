@@ -66,7 +66,7 @@ app.post("/proxy/update", async (req, res, next) => {
   try {
     const { accessToken } = req.body;
     const routes = await updateProxyRoutes(accessToken);
-    updateRoutes;
+    updateRoutes();
 
     res.status(200).json(routes);
   } catch (err) {
@@ -99,6 +99,8 @@ app.post("/login", async (req, res) => {
     console.log(userData);
     const response = await login(userData);
 
+    updateProxyRoutes(response?.data.accessToken);
+    updateRoutes();
     res.status(200).json({
       message: `Welcome, ${response?.data.user.name}`,
       userData: response?.data,
@@ -274,7 +276,8 @@ app.post("/deploy", async (req, res, next) => {
     const serviceInfo = await createContainer(
       msData.routeName,
       msData.code,
-      msData.language
+      msData.language,
+      accessToken
     );
     msData.url = serviceInfo.url;
     await fetch("http://localhost:3000/db/insert", {
@@ -354,7 +357,8 @@ app.post("/ms/update", async (req, res, next) => {
     const newContainer = await createContainer(
       data.updates.routeName,
       data.updates.code,
-      data.updates.language
+      data.updates.language,
+      accessToken
     );
     data.updates.url = newContainer.url;
 
