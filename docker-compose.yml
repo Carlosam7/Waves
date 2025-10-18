@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  backend:
+    build: ./Back
+    container_name: backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app-network
+  
+  frontend:
+    build: 
+      context: ./Waves
+    container_name: frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

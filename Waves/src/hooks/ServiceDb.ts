@@ -1,9 +1,12 @@
 import type { Microservice, MicroserviceToSend } from "../lib/types";
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 const MICROSERVICES_KEY = 'microservices';
 
 export const getDataTable = async (nameTable:string) => {
     try{
-        const response = await fetch(`http://localhost:3000/db/read/${nameTable}`, {
+        const response = await fetch(`/db/read/${nameTable}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -40,7 +43,7 @@ export const getDataTable = async (nameTable:string) => {
         //throw new Error('Get data failed', error.message)
         return {
             success: false,
-            data: null,
+            data: [],
             error: `Este fue el error: ${error}`
         }
     }
@@ -52,52 +55,39 @@ export const microservice = {
         let data: any;
         if (typeof window === 'undefined') return {success: false, data: [], error: 'Window undefined'};
         localStorage.removeItem(MICROSERVICES_KEY)
-        // data = localStorage.getItem(MICROSERVICES_KEY);
-        // if (data) {
-        //     console.log('HAY DATOSSSS')
-        //     return {
-        //         success: true,
-        //         data: JSON.parse(data),
-        //         error: null
-        //     } ;
-        // }else{
-            data = await getDataTable('microservice');
-            // console.log('Esta fue la respuesta', data)
-            if (data.success){
-                // console.log('ESTE ES EL TAMÑO DE LOS DATOS: ', data.data.length)
-                if (data.data != 0){
-                    localStorage.setItem(MICROSERVICES_KEY, JSON.stringify(data.data))
-                }
-                return {
-                    success: true,
-                    data: data.data,
-                    error: null
-                }
-                    
-            }else {
-                return {
-                    success: false,
-                    data: data.data,
-                    error: data.error
-                }
+
+        data = await getDataTable('microservice');
+        // console.log('Esta fue la respuesta', data)
+        if (data.success){
+            // console.log('ESTE ES EL TAMÑO DE LOS DATOS: ', data.data.length)
+            if (data.data != 0){
+                localStorage.setItem(MICROSERVICES_KEY, JSON.stringify(data.data))
             }
-        
+            return {
+                success: true,
+                data: data.data,
+                error: null
+            }       
+        }else {
+            return {
+                success: false,
+                data: data.data,
+                error: data.error
+            }
+        }
     },
 
     create: async(dataMicroservice: Omit<MicroserviceToSend, 'createdAt' | 'updatedAt'>) => {
-        // console.log('VOY EMPEZANDO')
         if (!dataMicroservice){
             return {succes: false, data:null, error: 'No data provider'}
         }
-        
         const newService: MicroserviceToSend = {
             ...dataMicroservice,
             createdAt: new Date(),
             updatedAt: new Date()
         }
-
         try {
-            const response = await fetch('http://localhost:3000/db/insert', {
+            const response = await fetch(`/db/insert`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -108,9 +98,7 @@ export const microservice = {
                 accessToken: localStorage.getItem('accessToken')
                 })
             });
-
             const result = await response.json()
-            // console.log('ESTE ES EL RESULT: ', result)
             if (!response.ok) {
                 return {
                     success: false,
@@ -118,19 +106,10 @@ export const microservice = {
                     error: result.message || 'Create microservice was failed'
                 }
             }
-            // console.log('Esto es longitud: ', result.data.inserted.length)
-            // console.log('ESTA ES LA RAZÓN: ', result.data.skipped[0])
             if (result.data.inserted.length === 0){
                 const reason = result.data.skipped[0]
                 return {success: false, data: null, error: reason.reason}
             }
-            
-            // const services = await microservice.getAll()
-            // if (services.success){
-            //     // console.log('Creando microservicio :)');
-            //     const updated = [...services.data as Microservice[], newService]
-            //     localStorage.setItem(MICROSERVICES_KEY, JSON.stringify(updated));
-            // }
             return {success: true, data: result, error: null}
         }catch (error:any) {
             console.error('Error creating microservice: ', error);
@@ -143,16 +122,14 @@ export const microservice = {
         if (!dataMicroservice){
             return {succes: false, data:null, error: 'No data provider'}
         }
-        
         const newService: MicroserviceToSend = {
             ...dataMicroservice,
             createdAt: new Date(),
             updatedAt: new Date()
         }
-
         console.log('ESTOS SON LOS DATOS QUE ENVIARÉ A LA PETICIÓN: ', newService)
         try {
-            const response = await fetch('http://localhost:3000/deploy', {
+            const response = await fetch(`/deploy`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -171,7 +148,6 @@ export const microservice = {
                     error: result.message || 'Create microservice was failed'
                 }
             }
-
             return {success: true, data: result, error: null}
         }catch (error:any) {
             console.error('Error creating microservice: ', error);
@@ -187,7 +163,7 @@ export const microservice = {
             return false;
         }
         try {
-            const responseDelete = await fetch(`http://localhost:3000/ms/delete/${nameMicroservice}`, {
+            const responseDelete = await fetch(`${API_URL}/ms/delete/${nameMicroservice}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -213,6 +189,7 @@ export const microservice = {
             setTimeout(() => window.location.reload(), 100)
         }
     },
+
     update: async (data: any, nameMicroservice: string): Promise<{success: boolean, message: string}> => {
         data.updatedAt = new Date
         console.log('ESTOS SON LOS DATOS QUE SE VAN A CONSULTAR: ', data)
@@ -221,7 +198,7 @@ export const microservice = {
         }
         console.log('Se mandó esto: ', data)
         try {
-            const response = await fetch('http://localhost:3000/ms/update', {
+            const response = await fetch(`/ms/update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

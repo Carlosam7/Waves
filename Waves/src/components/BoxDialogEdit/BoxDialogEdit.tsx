@@ -25,6 +25,7 @@ export const BoxDialogEdit = ({ dialogRef, data, setData, activeFunction, setAct
     }
     useEffect(()=> {
         setData(service)
+        console.log(`Código del servicio ${service.routeName} ${service.code}`)
 
     }, [service])
   
@@ -92,7 +93,7 @@ export const BoxDialogEdit = ({ dialogRef, data, setData, activeFunction, setAct
                     <p>Edit microservice information and his EndPoints</p>
                 </div>
 
-                <form action="" className={styles.formDialog}>
+                <form key={service._id} action="" className={styles.formDialog}>
                     <div className={`${styles.inputDialog} ${styles.inputForm}`}>
                         <label htmlFor="name">Name</label>
                         <input required id='name' name='name' type="text" autoComplete='false' placeholder='User Authentication Service' 
@@ -136,8 +137,8 @@ export const BoxDialogEdit = ({ dialogRef, data, setData, activeFunction, setAct
                         <EndPointFormEdit data={service} setData={setService}/>
                     </div>
                     <div className={styles.containerCode}>
-                        <label htmlFor="codeEdit">Subir codigo</label>
-                        <input key={service.routeName} id='codeEdit' type="file" accept='.py, .js, .cs'
+                        <label htmlFor={service._id}>Subir codigo</label>
+                        <input key={service._id} id={service._id} type="file" accept='.py, .js, .cs'
                             onChange={handleFileChange}
                         />
                         <p>{nameFile}</p>
