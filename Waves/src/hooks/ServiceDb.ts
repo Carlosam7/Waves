@@ -81,6 +81,7 @@ export const microservice = {
             createdAt: new Date(),
             updatedAt: new Date()
         }
+        newService.status = 'Active'
         try {
             const response = await fetch(`/db/insert`, {
                 method: 'POST',

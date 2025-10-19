@@ -5,7 +5,7 @@ import type { Microservice } from "../../lib/types";
 import { useEffect, useRef, useState } from "react";
 import { BoxDialogEdit } from "../BoxDialogEdit/BoxDialogEdit";
 import { updateService } from "../../hooks/updateService";
-
+import { getStatusService } from "../../hooks/getStatusService";
 
 interface MicroserviceCardProps {
     service: Microservice
@@ -21,6 +21,7 @@ export function MicroserviceCard ({ service, onDelete, onViewEndpoints } : Micro
         Error: 'linear-gradient(90deg, #FF5B5B 0%, #FF7373 100%)'
 
     }
+    const [ getStatus, setGetStatus ] = useState<'Active' | 'Inactive' | 'Error'>('Active');
 
     const [infoService, setInfoService] = useState(service);
     const [activeFunction, setActiveFunction] = useState(false);
@@ -29,13 +30,21 @@ export function MicroserviceCard ({ service, onDelete, onViewEndpoints } : Micro
     };
 
     useEffect(() => {
+        const fetchStatus = async () => {
+            const state: any = await getStatusService(service.routeName);
+            service.status = state;
+            setGetStatus(state);
+        }
+        fetchStatus()
+    }, [])
+
+    useEffect(() => {
         if (activeFunction){
             updateService(infoService, service.routeName)
             dialogEdit.current?.close();dialogEdit.current?.close();
             setActiveFunction(false)
         }
     },[activeFunction])
-
 
     const iconLenguage = {
         python: <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 48 48"> 
@@ -56,7 +65,7 @@ export function MicroserviceCard ({ service, onDelete, onViewEndpoints } : Micro
                     <div className={styles.headCard}>
                         <div>
                             <h3>{service.routeName}</h3>
-                            <button style={{ background: statusColor[service.status], color: "white"}}>    {service.status}    </button>
+                            <button style={{ background: statusColor[getStatus], color: "white"}}>    {service.status}    </button>
                         </div>
                         <p>     {service.description}   </p>
                     </div>
