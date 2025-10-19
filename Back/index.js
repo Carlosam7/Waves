@@ -1,7 +1,11 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { createContainer, deleteContainer } from "./services/dockerService.js";
+import {
+  createContainer,
+  deleteContainer,
+  getContainerStatus,
+} from "./services/dockerService.js";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import {
   readProxyRoutes,
@@ -99,8 +103,6 @@ app.post("/login", async (req, res) => {
     console.log(userData);
     const response = await login(userData);
 
-    updateProxyRoutes(response?.data.accessToken);
-    updateRoutes();
     res.status(200).json({
       message: `Welcome, ${response?.data.user.name}`,
       userData: response?.data,
@@ -166,6 +168,31 @@ app.get("/refreshToken", async (req, res) => {
   }
 });
 
+app.get("/ms/getStatus/:msName", async (req, res, next) => {
+  try {
+    const { msName } = req.params;
+
+    const data = await getContainerStatus(msName);
+
+    for (const service of data) {
+      if (service.name === `${msName}_c`) {
+        if (service.status.includes("Up")) {
+          return res.status(200).json({ status: "Active" });
+        } else {
+          return res.status(200).json({ status: "Inactive" });
+        }
+      }
+    }
+    const err = new Error(`Microservice ${msName} not found`);
+    err.status = 404;
+    err.statusText = "Not Found";
+    throw err;
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 app.post("/db/read/:tableName", async (req, res, next) => {
   const { tableName } = req.params;
   const { params, accessToken } = req.body;
@@ -183,7 +210,8 @@ app.post("/db/read/:tableName", async (req, res, next) => {
     });
 
     const response = await getTable(tableParams, accessToken);
-
+    writeProxyRoutes(response.data);
+    updateRoutes();
     res.status(200).json({ data: response?.data });
   } catch (err) {
     console.error("Error:", err.response?.data || err.message);

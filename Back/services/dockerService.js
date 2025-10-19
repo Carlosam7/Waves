@@ -104,6 +104,18 @@ export async function createContainer(name, code, language, accessToken) {
   };
 }
 
+export async function getContainerStatus() {
+  const res = await execPromise(
+    `docker ps -a --format "{{.Names}}:{{.Status}}"`
+  );
+
+  const containerStatus = res.split("\n").map((line) => {
+    const [name, status] = line.split(":");
+    return { name, status };
+  });
+  return containerStatus;
+}
+
 export async function deleteContainer(name) {
   const path = `./temp/${name}`;
 
