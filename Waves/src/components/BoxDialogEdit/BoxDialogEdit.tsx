@@ -137,7 +137,7 @@ export const BoxDialogEdit = ({ dialogRef, data, setData, activeFunction, setAct
                         <EndPointFormEdit data={service} setData={setService}/>
                     </div>
                     <div className={styles.containerCode}>
-                        <label htmlFor={service._id}>Subir codigo</label>
+                        <label htmlFor={service._id}>Upload code</label>
                         <input key={service._id} id={service._id} type="file" accept='.py, .js, .cs'
                             onChange={handleFileChange}
                         />

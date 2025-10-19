@@ -116,7 +116,7 @@ export const BoxDialog = ({ dialogRef, data, setData, activeFunction, setActiveF
                         <EndPointForm data={data} setData={setData}/>
                     </div>
                     <div className={styles.containerCode}>
-                        <label htmlFor="submitCode">Subir codigo</label>
+                        <label htmlFor="submitCode">Upload code</label>
                         <input id='submitCode' type="file" accept='.py, .js, .cs'
                             onChange={(e) => handleFileChange(e)}
                         />

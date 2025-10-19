@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import type { Microservice, MicroserviceToSend } from "../lib/types";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -18,10 +19,8 @@ export const getDataTable = async (nameTable:string) => {
                 accessToken: localStorage.getItem('accessToken')
             })
         })
-        // console.log('QUÉ DIJO', response)
         if (!response.ok) {
             const errorData = await response.json();
-            // console.log('Error al obtener datos', errorData);
             return {
                 success: false,
                 data: errorData.data,
@@ -31,7 +30,6 @@ export const getDataTable = async (nameTable:string) => {
         
         if (response.ok) {
             const data = await response.json();
-            // console.log('Datos obtenidos exitosamente: ', data)
             return {
                 success: true,
                 data: data.data,
@@ -40,7 +38,6 @@ export const getDataTable = async (nameTable:string) => {
         }
     } catch (error:any) {
         console.error('Unexpected error ', error);
-        //throw new Error('Get data failed', error.message)
         return {
             success: false,
             data: [],
@@ -57,9 +54,7 @@ export const microservice = {
         localStorage.removeItem(MICROSERVICES_KEY)
 
         data = await getDataTable('microservice');
-        // console.log('Esta fue la respuesta', data)
         if (data.success){
-            // console.log('ESTE ES EL TAMÑO DE LOS DATOS: ', data.data.length)
             if (data.data != 0){
                 localStorage.setItem(MICROSERVICES_KEY, JSON.stringify(data.data))
             }
@@ -162,6 +157,7 @@ export const microservice = {
             console.error('The Microservice does not exist');
             return false;
         }
+        const toastId = toast.loading('Deleting microservice...');
         try {
             const responseDelete = await fetch(`${API_URL}/ms/delete/${nameMicroservice}`, {
                 method: 'POST',
@@ -174,12 +170,15 @@ export const microservice = {
 
             const result = await responseDelete.json()
             if (!responseDelete.ok) {
+                toast.error(`Ups, something went wrong: ${result.message}`, {
+                    id: toastId
+                })
                 console.error('Ups, something went wrong. We were enabled to delete the microservice: ', result.message);
                 return false;
             }
-            // await microservice.getAll();
-           // console.log('ESTE ES EL NOMBRE QUE QUIERO ELIMINAD: ', nameMicroservice)
-            console.warn('The microservice has been removed.')
+            toast.success('The microservice has been removed.',{
+                id: toastId,
+            })
             return true;
         }catch (error) {
             console.error('Error deleting microservice: ', error)
@@ -240,7 +239,7 @@ export const microservice = {
                     message: `Ups, error updating microservice: ${error}`
                     }
         }finally {
-            // setTimeout(() => window.location.reload(), 100)   
+            setTimeout(() => window.location.reload(), 100)   
         }
     }
 };

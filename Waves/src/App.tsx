@@ -23,20 +23,11 @@ const RequiredAuth = ({ children }: { children: React.ReactNode }) => {
     if (!isAuthenticated){
       return <Navigate to='/log-in' state={{from: location}} replace />
     }
-
-    // if (isAuthenticated){
-    //   // // if (useLocation().pathname === '/log-in' || useLocation().pathname === 'sign-up') {
-    //   // //   return <Navigate to='/app'/>
-    //   // }
-
       return <>{children}</>;
-    // }
-
 }
 
 function App() {
   return (
-    //<PublicLayout />
     <BrowserRouter>
       <Routes>
         {/* Public routes */}
@@ -66,22 +57,10 @@ function App() {
           <Route path='*' element={<Navigate to='/app/dashboard' replace/>}/>
 
         </Route>
-
         <Route path="*" element={<Navigate to="/" replace />} />
-        
-
-        
       </Routes>
     </BrowserRouter>
   );
 }
 
 export default App
-
-
-{/* <Route path="/" element={<MainLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="microservice" element={<Microservice />} />
-          <Route path="favorites" element={<h1>Favorites</h1>} />
-          <Route path="settings" element={<h1>Settings</h1>} />
-        </Route> */}
