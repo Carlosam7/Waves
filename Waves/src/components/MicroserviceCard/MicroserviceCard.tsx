@@ -65,7 +65,7 @@ export function MicroserviceCard ({ service, onDelete, onViewEndpoints } : Micro
                     <div className={styles.headCard}>
                         <div>
                             <h3>{service.routeName}</h3>
-                            <button style={{ background: statusColor[getStatus], color: "white"}}>    {service.status}    </button>
+                            <button style={{ background: statusColor[getStatus], color: "white"}}>    {getStatus}    </button>
                         </div>
                         <p>     {service.description}   </p>
                     </div>
